@@ -1,0 +1,5 @@
+new_post:
+  ext: .Rmd
+  subdir: posts
+  title_case: false
+  author: "Boss Kasai"

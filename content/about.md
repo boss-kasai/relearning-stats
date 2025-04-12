@@ -1,28 +1,15 @@
 +++
 title = "About"
-description = "Hugo, the world’s fastest framework for building websites"
-date = "2019-02-28"
-aliases = ["about-us","about-hugo","contact"]
-author = "Hugo Authors"
+description = "大学時代に心理学部で統計などでRを使っていました。その再学習です。"
+date = "2025-04-14"
+aliases = ["about", "profile", "自己紹介"]
+author = "ThePastOfDice"
 +++
 
-Written in Go, Hugo is an open source static site generator available under the [Apache Licence 2.0.](https://github.com/gohugoio/hugo/blob/master/LICENSE) Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.
+大学時代に心理学部でRを使った統計分析をしていました。  
+このブログでは、8年ぶりにRを再学習する過程や、  
+Pythonでの分析との違いなども記録していきます。
 
-Hugo makes use of a variety of open source projects including:
+統計の復習、分析方法の整理、そして日々の気づきをゆるくまとめていきます。
 
-* https://github.com/yuin/goldmark
-* https://github.com/alecthomas/chroma
-* https://github.com/muesli/smartcrop
-* https://github.com/spf13/cobra
-* https://github.com/spf13/viper
-
-Hugo is ideal for blogs, corporate websites, creative portfolios, online magazines, single page applications or even a website with thousands of pages.
-
-Hugo is for people who want to hand code their own website without worrying about setting up complicated runtimes, dependencies and databases.
-
-Websites built with Hugo are extremelly fast, secure and can be deployed anywhere including, AWS, GitHub Pages, Heroku, Netlify and any other hosting provider.
-
-Learn more and contribute on [GitHub](https://github.com/gohugoio).
-
-
-
+Rにちょっと興味のある人や、大学でRを使わないといけなくて困っている人の役に立てればと思います。
