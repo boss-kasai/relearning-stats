@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "記事一覧",
+    "section": "",
+    "text": "記事一覧\n\nRブログはじめました"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "relearning-stats",
+    "section": "",
+    "text": "Rブログはじめました\n\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "index.html#記事一覧",
+    "href": "index.html#記事一覧",
+    "title": "relearning-stats",
+    "section": "",
+    "text": "Rブログはじめました\n\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-start.html",
+    "href": "posts/2025-04-14-r-blog-start.html",
+    "title": "Rの再学習、はじめました",
+    "section": "",
+    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  }
+]

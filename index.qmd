@@ -1,0 +1,10 @@
+---
+title: "relearning-stats"
+---
+
+## 記事一覧
+
+- [Rブログはじめました](posts/2025-04-14-r-blog-start.html)
+
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
