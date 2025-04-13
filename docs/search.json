@@ -7,48 +7,6 @@
     "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "relearning-stats",
-    "section": "",
-    "text": "relearning-stats にようこそ！\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
-  },
-  {
-    "objectID": "index.html#記事一覧",
-    "href": "index.html#記事一覧",
-    "title": "relearning-stats",
-    "section": "",
-    "text": "Rブログはじめました\n\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
-  },
-  {
-    "objectID": "posts/2025-04-14-r-blog-start.html",
-    "href": "posts/2025-04-14-r-blog-start.html",
-    "title": "Rの再学習、はじめました",
-    "section": "",
-    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "R.html",
-    "href": "R.html",
-    "title": "R",
-    "section": "",
-    "text": "Rに関する記事をジャンル分けしてまとめたものです。"
-  },
-  {
-    "objectID": "posts/2025-04-14-r-blog-with-r.html",
-    "href": "posts/2025-04-14-r-blog-with-r.html",
-    "title": "RでRのブログを作る",
-    "section": "",
-    "text": "Rの再学習のブログを書くことに決めて、まず最初に考えることはやっぱり「どこでブログを書こうか」ですよね。 はてなブログやQiita, Zennなど多数のサービスがあり簡単にブログは始められます。\nしかしせっかくなので、ブログの作成もRでやってみたい。 私がRをメインで使用していた時には、まだメジャーではありませんでしたがR MarkdownなどのRでレポートを作成したり、簡単なWEBサイトをつくれるという話はありました。 当時はそのようなものを使ったことはありませんでしが、せっかく学習し直すのでその辺もカバーしていこうと思います。"
-  },
-  {
     "objectID": "column.html",
     "href": "column.html",
     "title": "コラム",
@@ -61,6 +19,34 @@
     "title": "コラム",
     "section": "",
     "text": "Rブログはじめました\nRでRのブログを作る"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "relearning-stats",
+    "section": "",
+    "text": "relearning-stats にようこそ！\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-start.html",
+    "href": "posts/2025-04-14-r-blog-start.html",
+    "title": "Rの再学習、はじめました",
+    "section": "",
+    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-with-r.html",
+    "href": "posts/2025-04-14-r-blog-with-r.html",
+    "title": "RでRのブログを作る",
+    "section": "",
+    "text": "Rの再学習のブログを書くことに決めて、まず最初に考えることはやっぱり「どこでブログを書こうか」ですよね。 はてなブログやQiita, Zennなど多数のサービスがあり簡単にブログは始められます。\nしかしせっかくなので、ブログの作成もRでやってみたい。 私がRをメインで使用していた時には、まだメジャーではありませんでしたがR MarkdownなどのRでレポートを作成したり、簡単なWEBサイトをつくれるという話はありました。 当時はそのようなものを使ったことはありませんでしが、せっかく学習し直すのでその辺もカバーしていこうと思います。"
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-with-r.html#背景",
+    "href": "posts/2025-04-14-r-blog-with-r.html#背景",
+    "title": "RでRのブログを作る",
+    "section": "",
+    "text": "Rの再学習のブログを書くことに決めて、まず最初に考えることはやっぱり「どこでブログを書こうか」ですよね。 はてなブログやQiita, Zennなど多数のサービスがあり簡単にブログは始められます。\nしかしせっかくなので、ブログの作成もRでやってみたい。 私がRをメインで使用していた時には、まだメジャーではありませんでしたがR MarkdownなどのRでレポートを作成したり、簡単なWEBサイトをつくれるという話はありました。 当時はそのようなものを使ったことはありませんでしが、せっかく学習し直すのでその辺もカバーしていこうと思います。"
   },
   {
     "objectID": "posts/2025-04-14-r-blog-with-r.html#r-studioのインストール",
@@ -82,13 +68,6 @@
     "title": "RでRのブログを作る",
     "section": "前準備",
     "text": "前準備\nGitHubのアカウントが無い方は、下記から作成してください。 https://github.com\nGitHubでリポジトリを作成してください。 名前；リポジトリ名はそのままURLになります(オリジナルドメインへの変更も可能) 公開設定；Public(無料でやる場合、Publicにする必要があります) 初期ファイル；README.md を生成にチェック\n注意；下書きの記事を含めて世界中からアクセス可能な状態になるので、個人情報などは書かないようにしましょう。\n上記で作成したGitHub リポジトリをローカルにクローンしてください。\ngit clone https://github.com/yourusername/yourrepositoryname.git\ncd yourrepositoryname\nyourusername: あなたのGitHubのユーザー名\nyourrepositoryname: 先ほど作成したリポジトリ名\nRStudioを起動して、クローンしたプロジェクトを開いてください。 まず、今後の作業がしやすいようにRstudioでProjectを作成します。\n手順（RStudio内で） 1. RStudioメニュー → File → New Project… 2. 「Existing Directory（既存のフォルダ）」を選択 3. 「Browse…」をクリックし、フォルダを選択 4. 「Create Project」をクリック\nこの作業をしておくことで、ファイルの入出力などが作業フォルダ内で行われます。 この作業をしていないと、意図しないフォルダにファイルを出力することになります。"
-  },
-  {
-    "objectID": "posts/2025-04-14-r-blog-with-r.html#背景",
-    "href": "posts/2025-04-14-r-blog-with-r.html#背景",
-    "title": "RでRのブログを作る",
-    "section": "",
-    "text": "Rの再学習のブログを書くことに決めて、まず最初に考えることはやっぱり「どこでブログを書こうか」ですよね。 はてなブログやQiita, Zennなど多数のサービスがあり簡単にブログは始められます。\nしかしせっかくなので、ブログの作成もRでやってみたい。 私がRをメインで使用していた時には、まだメジャーではありませんでしたがR MarkdownなどのRでレポートを作成したり、簡単なWEBサイトをつくれるという話はありました。 当時はそのようなものを使ったことはありませんでしが、せっかく学習し直すのでその辺もカバーしていこうと思います。"
   },
   {
     "objectID": "posts/2025-04-14-r-blog-with-r.html#quartoの導入",
@@ -117,5 +96,19 @@
     "title": "RでRのブログを作る",
     "section": "GitHub Pagesを有効化",
     "text": "GitHub Pagesを有効化\nGithubでの設定は最小限の解説です。\n\nリポジトリのページへ → Settings → Pages\n「Source」 → Deploy from a branch\nブランチ：main（またはmaster） / フォルダ：/docs -&gt; _siteフォルダを使用の場合はその名称で 4, 「Save」をクリック\n\nこれで一旦、サイトの公開までできます。 デザインとかまだまだ変更するべき点がありますが、一旦それは置いておきましょう。\nでは、今日はここまで。"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "R.html",
+    "href": "R.html",
+    "title": "R",
+    "section": "",
+    "text": "Rに関する記事をジャンル分けしてまとめたものです。"
   }
 ]
