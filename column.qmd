@@ -1,0 +1,13 @@
+---
+title: "コラム"
+format: html
+---
+
+# コラム
+
+プラグラミングのコードなどではない記事です。
+
+## 記事一覧
+
+- [Rブログはじめました](posts/2025-04-14-r-blog-start.html)
+- [RでRのブログを作る](posts/2025-04-14-r-blog-with-r.html)

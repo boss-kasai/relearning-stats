@@ -1,0 +1,198 @@
+---
+title: 'RでRのブログを作る'
+author: "ThePastOfDice"
+date: '2025-04-12'
+categories: ["コラム"]
+tags: []
+---
+
+## 背景
+
+Rの再学習のブログを書くことに決めて、まず最初に考えることはやっぱり「どこでブログを書こうか」ですよね。
+はてなブログやQiita, Zennなど多数のサービスがあり簡単にブログは始められます。
+
+しかしせっかくなので、ブログの作成もRでやってみたい。
+私がRをメインで使用していた時には、まだメジャーではありませんでしたがR MarkdownなどのRでレポートを作成したり、簡単なWEBサイトをつくれるという話はありました。
+当時はそのようなものを使ったことはありませんでしが、せっかく学習し直すのでその辺もカバーしていこうと思います。
+
+## R Studioのインストール
+
+今、RをやるならR Studioを使うのがいいかなと思います。
+他の選択肢もあったらすみません。
+
+R Studioは下記URLからダウンロードできます。
+https://posit.co/download/rstudio-desktop/
+
+私の環境はMacなのでwindowsの方は適宜読み替えてください。
+
+## 今回の目的と使用技術
+
+今回は無料でRを使ってブログを公開することを目的にします。
+ブログ内ではRのコードと実行結果が書きやすく、見やすいようにします。
+
+ブログなどサイトを公開する際は、サーバーが必要になります。
+今回はGitHub Pagesを使用します。
+無料で設定が簡単そうなのが選定理由です。
+
+Rでのブログ作成には大きく２つの方法があります。
+ **Hugo（+ blogdown）** と **Quarto**です。
+私が調べた限り、Hugoの方がテーマ(デザイン)が豊富でサイト全体が軽量なようです。
+Quartoはよりモダンで、R以外の言語もより柔軟に対応できるようです。
+
+Hugoを使ってみようと挑戦していたのですが、うまくいかなかったので今回はQuartoはよりモダンでを使用することにしました。
+
+## 前準備
+
+GitHubのアカウントが無い方は、下記から作成してください。
+https://github.com
+
+GitHubでリポジトリを作成してください。
+名前；リポジトリ名はそのままURLになります(オリジナルドメインへの変更も可能)
+公開設定；Public(無料でやる場合、Publicにする必要があります)
+初期ファイル；README.md を生成にチェック
+
+注意；下書きの記事を含めて世界中からアクセス可能な状態になるので、個人情報などは書かないようにしましょう。
+
+上記で作成したGitHub リポジトリをローカルにクローンしてください。
+```{bash}
+git clone https://github.com/yourusername/yourrepositoryname.git
+cd yourrepositoryname
+```
+`yourusername`: あなたのGitHubのユーザー名
+
+`yourrepositoryname`: 先ほど作成したリポジトリ名
+
+
+RStudioを起動して、クローンしたプロジェクトを開いてください。
+まず、今後の作業がしやすいようにRstudioでProjectを作成します。
+
+**手順（RStudio内で）**
+1. RStudioメニュー → File → New Project...
+2. 「Existing Directory（既存のフォルダ）」を選択
+3. 「Browse...」をクリックし、フォルダを選択
+4. 「Create Project」をクリック
+
+この作業をしておくことで、ファイルの入出力などが作業フォルダ内で行われます。
+この作業をしていないと、意図しないフォルダにファイルを出力することになります。
+
+## Quartoの導入
+
+QuartoはRStudioのConsoleから操作することができません。
+なので、Macのターミナルを起動します。
+
+Homebrewでquartoをインストールします。
+
+```{bash}
+brew install --cask quarto
+```
+
+インストールできたか不安であれば、下記コマンドで確認できます。
+```{bash}
+$ quarto check
+[✓] Quarto CLI version 1.x.x
+[✓] R is installed
+[✓] RStudio is installed
+```
+
+Quartoがインストールできたら、実際のプロジェクトを作成していきます。
+作業ディレクトリで下記コマンドを実行します。
+
+```{bash}
+quarto create-project . --type website
+```
+
+そうすると、必要なファイルやフォルダが自動で作成されます。
+
+```{bash}
+$ tree
+.
+├── README.md
+├── _quarto.yml
+├── about.qmd
+├── index.qmd
+├── relearning-stats.Rproj
+└── styles.css
+```
+
+## 記事の作成
+
+ここからは記事作成のために準備に入っていきます。
+まずは記事を保存するフォルダを作成します。
+
+｀``{bash}
+mkdir posts
+```
+
+次に記事を書くファイルを作成します。
+
+```{bash}
+touch posts/2025-04-14-r-blog-start.qmd
+```
+
+ファイルの作成ができたら、記事を書いていきます。
+記事の最上部には記事に関する情報を固定で記載します。
+
+```{qmd}
+---
+title: "Rブログはじめました"
+author: "著者名"
+date: 2025-04-14
+categories: ["コラム"]
+tags: ["Quarto", "R"]
+---
+
+## はじめに
+
+Quartoでブログを始めました！
+
+```
+
+マークダウン記法に関しては、別で調べてみてください。
+私にも余裕があれば、まとめてみようと思います。
+私自身書き始めたばかりなので、あまり分かっていません。
+
+記事が書けたら、ローカルでどんな感じかを確認してみます。
+```{bash}
+quarto preview
+```
+
+http://localhost:4200/ にアクセスすると現在のサイトを見ることができます。
+
+デザインとかをしていないので、かなりノスタルジックなサイトが出来上がります。
+
+## 公開に向けて
+
+下記コマンドで公開用のhtmlを自動で生成してくれます。
+```{bash}
+quarto render
+```
+
+出力は```_site```というフォルダに作成されます。
+私は、docsという名前のフォルダが良かったので、```_quarto.yaml```に下記を追加して、出力先を変更しました。
+```{yaml}
+project:
+  type: website
+  output-dir: docs
+```
+
+上記がスムーズに行ったら、GitHubにpushしてください。
+
+```{bash}
+git add -A
+git commit -m "First Commit"
+git push origin main
+```
+
+## GitHub Pagesを有効化
+
+Githubでの設定は最小限の解説です。
+
+1. リポジトリのページへ → Settings → Pages
+2. 「Source」 → Deploy from a branch
+3. ブランチ：main（またはmaster） / フォルダ：/docs -> _siteフォルダを使用の場合はその名称で
+4, 「Save」をクリック
+
+これで一旦、サイトの公開までできます。
+デザインとかまだまだ変更するべき点がありますが、一旦それは置いておきましょう。
+
+では、今日はここまで。

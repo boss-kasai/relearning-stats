@@ -1,1 +1,17 @@
 /* css styles */
+/* コードブロック全体の見た目 */
+pre {
+  background-color: #f6f8fa;
+  border: 1px solid #ccc;
+  border-left: 4px solid #007ACC;
+  padding: 1em;
+  overflow-x: auto;
+  border-radius: 5px;
+}
+
+/* コードフォントを統一（等幅フォント） */
+pre code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95em;
+  color: #333;
+}

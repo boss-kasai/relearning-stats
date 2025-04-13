@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ThePastOfDice">
+<meta name="dcterms.date" content="2025-04-12">
 
-<title>記事一覧 – relearning-stats</title>
+<title>RでRのブログを作る – relearning-stats</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,25 +22,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c44ea0d3856dd046b875089f7fe24e46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-20252fd49cbe0430650c563cf82ea673.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c44ea0d3856dd046b875089f7fe24e46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-20252fd49cbe0430650c563cf82ea673.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -78,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">relearning-stats</span>
     </a>
   </div>
@@ -89,23 +124,23 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./posts.html" aria-current="page"> 
+    <a class="nav-link" href="../posts.html"> 
 <span class="menu-text">記事一覧</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./column.html"> 
+    <a class="nav-link" href="../column.html"> 
 <span class="menu-text">コラム</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./R.html"> 
+    <a class="nav-link" href="../R.html"> 
 <span class="menu-text">R</span></a>
   </li>  
 </ul>
@@ -125,8 +160,11 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">記事一覧</h1>
-</div>
+<h1 class="title">RでRのブログを作る</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">コラム</div>
+  </div>
+  </div>
 
 
 
@@ -139,6 +177,12 @@ ul.task-list li input[type="checkbox"] {
           </div>
   </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 12, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -148,12 +192,110 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="記事一覧" class="level1">
-<h1>記事一覧</h1>
-<ul>
-<li><a href="posts/2025-04-14-r-blog-start.html">Rブログはじめました</a></li>
-<li><a href="posts/2025-04-14-r-blog-with-r.html">RでRのブログを作る</a></li>
-</ul>
+<section id="背景" class="level2">
+<h2 class="anchored" data-anchor-id="背景">背景</h2>
+<p>Rの再学習のブログを書くことに決めて、まず最初に考えることはやっぱり「どこでブログを書こうか」ですよね。 はてなブログやQiita, Zennなど多数のサービスがあり簡単にブログは始められます。</p>
+<p>しかしせっかくなので、ブログの作成もRでやってみたい。 私がRをメインで使用していた時には、まだメジャーではありませんでしたがR MarkdownなどのRでレポートを作成したり、簡単なWEBサイトをつくれるという話はありました。 当時はそのようなものを使ったことはありませんでしが、せっかく学習し直すのでその辺もカバーしていこうと思います。</p>
+</section>
+<section id="r-studioのインストール" class="level2">
+<h2 class="anchored" data-anchor-id="r-studioのインストール">R Studioのインストール</h2>
+<p>今、RをやるならR Studioを使うのがいいかなと思います。 他の選択肢もあったらすみません。</p>
+<p>R Studioは下記URLからダウンロードできます。 https://posit.co/download/rstudio-desktop/</p>
+<p>私の環境はMacなのでwindowsの方は適宜読み替えてください。</p>
+</section>
+<section id="今回の目的と使用技術" class="level2">
+<h2 class="anchored" data-anchor-id="今回の目的と使用技術">今回の目的と使用技術</h2>
+<p>今回は無料でRを使ってブログを公開することを目的にします。 ブログ内ではRのコードと実行結果が書きやすく、見やすいようにします。</p>
+<p>ブログなどサイトを公開する際は、サーバーが必要になります。 今回はGitHub Pagesを使用します。 無料で設定が簡単そうなのが選定理由です。</p>
+<p>Rでのブログ作成には大きく２つの方法があります。 <strong>Hugo（+ blogdown）</strong> と <strong>Quarto</strong>です。 私が調べた限り、Hugoの方がテーマ(デザイン)が豊富でサイト全体が軽量なようです。 Quartoはよりモダンで、R以外の言語もより柔軟に対応できるようです。</p>
+<p>Hugoを使ってみようと挑戦していたのですが、うまくいかなかったので今回はQuartoはよりモダンでを使用することにしました。</p>
+</section>
+<section id="前準備" class="level2">
+<h2 class="anchored" data-anchor-id="前準備">前準備</h2>
+<p>GitHubのアカウントが無い方は、下記から作成してください。 https://github.com</p>
+<p>GitHubでリポジトリを作成してください。 名前；リポジトリ名はそのままURLになります(オリジナルドメインへの変更も可能) 公開設定；Public(無料でやる場合、Publicにする必要があります) 初期ファイル；README.md を生成にチェック</p>
+<p>注意；下書きの記事を含めて世界中からアクセス可能な状態になるので、個人情報などは書かないようにしましょう。</p>
+<p>上記で作成したGitHub リポジトリをローカルにクローンしてください。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>git clone https://github.com/yourusername/yourrepositoryname.git</span>
+<span id="cb1-2"><a href="#cb1-2"></a>cd yourrepositoryname</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>yourusername</code>: あなたのGitHubのユーザー名</p>
+<p><code>yourrepositoryname</code>: 先ほど作成したリポジトリ名</p>
+<p>RStudioを起動して、クローンしたプロジェクトを開いてください。 まず、今後の作業がしやすいようにRstudioでProjectを作成します。</p>
+<p><strong>手順（RStudio内で）</strong> 1. RStudioメニュー → File → New Project… 2. 「Existing Directory（既存のフォルダ）」を選択 3. 「Browse…」をクリックし、フォルダを選択 4. 「Create Project」をクリック</p>
+<p>この作業をしておくことで、ファイルの入出力などが作業フォルダ内で行われます。 この作業をしていないと、意図しないフォルダにファイルを出力することになります。</p>
+</section>
+<section id="quartoの導入" class="level2">
+<h2 class="anchored" data-anchor-id="quartoの導入">Quartoの導入</h2>
+<p>QuartoはRStudioのConsoleから操作することができません。 なので、Macのターミナルを起動します。</p>
+<p>Homebrewでquartoをインストールします。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1"></a>brew install --cask quarto</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>インストールできたか不安であれば、下記コマンドで確認できます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1"></a>$ quarto check</span>
+<span id="cb3-2"><a href="#cb3-2"></a>[✓] Quarto CLI version 1.x.x</span>
+<span id="cb3-3"><a href="#cb3-3"></a>[✓] R is installed</span>
+<span id="cb3-4"><a href="#cb3-4"></a>[✓] RStudio is installed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Quartoがインストールできたら、実際のプロジェクトを作成していきます。 作業ディレクトリで下記コマンドを実行します。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>quarto create-project . --type website</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>そうすると、必要なファイルやフォルダが自動で作成されます。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb5-1"><a href="#cb5-1"></a>$ tree</span>
+<span id="cb5-2"><a href="#cb5-2"></a>.</span>
+<span id="cb5-3"><a href="#cb5-3"></a>├── README.md</span>
+<span id="cb5-4"><a href="#cb5-4"></a>├── _quarto.yml</span>
+<span id="cb5-5"><a href="#cb5-5"></a>├── about.qmd</span>
+<span id="cb5-6"><a href="#cb5-6"></a>├── index.qmd</span>
+<span id="cb5-7"><a href="#cb5-7"></a>├── relearning-stats.Rproj</span>
+<span id="cb5-8"><a href="#cb5-8"></a>└── styles.css</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="記事の作成" class="level2">
+<h2 class="anchored" data-anchor-id="記事の作成">記事の作成</h2>
+<p>ここからは記事作成のために準備に入っていきます。 まずは記事を保存するフォルダを作成します。</p>
+<p>｀``{bash} mkdir posts</p>
+<pre><code>
+次に記事を書くファイルを作成します。
+
+```{bash}
+touch posts/2025-04-14-r-blog-start.qmd</code></pre>
+<p>ファイルの作成ができたら、記事を書いていきます。 記事の最上部には記事に関する情報を固定で記載します。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource {qmd} number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>---</span>
+<span id="cb7-2"><a href="#cb7-2"></a>title: "Rブログはじめました"</span>
+<span id="cb7-3"><a href="#cb7-3"></a>author: "著者名"</span>
+<span id="cb7-4"><a href="#cb7-4"></a>date: 2025-04-14</span>
+<span id="cb7-5"><a href="#cb7-5"></a>categories: ["コラム"]</span>
+<span id="cb7-6"><a href="#cb7-6"></a>tags: ["Quarto", "R"]</span>
+<span id="cb7-7"><a href="#cb7-7"></a>---</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>## はじめに</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a>Quartoでブログを始めました！</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>マークダウン記法に関しては、別で調べてみてください。 私にも余裕があれば、まとめてみようと思います。 私自身書き始めたばかりなので、あまり分かっていません。</p>
+<p>記事が書けたら、ローカルでどんな感じかを確認してみます。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>quarto preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>http://localhost:4200/ にアクセスすると現在のサイトを見ることができます。</p>
+<p>デザインとかをしていないので、かなりノスタルジックなサイトが出来上がります。</p>
+</section>
+<section id="公開に向けて" class="level2">
+<h2 class="anchored" data-anchor-id="公開に向けて">公開に向けて</h2>
+<p>下記コマンドで公開用のhtmlを自動で生成してくれます。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb9-1"><a href="#cb9-1"></a>quarto render</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>出力は<code>_site</code>というフォルダに作成されます。 私は、docsという名前のフォルダが良かったので、<code>_quarto.yaml</code>に下記を追加して、出力先を変更しました。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource {yaml} number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a href="#cb10-1"></a>project:</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  type: website</span>
+<span id="cb10-3"><a href="#cb10-3"></a>  output-dir: docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>上記がスムーズに行ったら、GitHubにpushしてください。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource {bash} number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a href="#cb11-1"></a>git add -A</span>
+<span id="cb11-2"><a href="#cb11-2"></a>git commit -m "First Commit"</span>
+<span id="cb11-3"><a href="#cb11-3"></a>git push origin main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="github-pagesを有効化" class="level2">
+<h2 class="anchored" data-anchor-id="github-pagesを有効化">GitHub Pagesを有効化</h2>
+<p>Githubでの設定は最小限の解説です。</p>
+<ol type="1">
+<li>リポジトリのページへ → Settings → Pages</li>
+<li>「Source」 → Deploy from a branch</li>
+<li>ブランチ：main（またはmaster） / フォルダ：/docs -&gt; _siteフォルダを使用の場合はその名称で 4, 「Save」をクリック</li>
+</ol>
+<p>これで一旦、サイトの公開までできます。 デザインとかまだまだ変更するべき点がありますが、一旦それは置いておきましょう。</p>
+<p>では、今日はここまで。</p>
 
 
 </section>
