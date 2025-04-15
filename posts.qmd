@@ -6,3 +6,4 @@ author: "ThePastOfDice"
 
 - [Rブログはじめました](posts/2025-04-14-r-blog-start.html)
 - [RでRのブログを作る](posts/2025-04-14-r-blog-with-r.html)
+- [Rの組み込みデータ](posts/2025-04-15-r-iner-data.html)
