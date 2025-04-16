@@ -10,3 +10,4 @@ Rに関する記事をジャンル分けしてまとめたものです。
 ## R入門
 
 - [Rの組み込みデータ](posts/2025-04-15-r-iner-data.html)
+- [基礎統計量と欠損値の確認](posts/2025-04-16-basic-stats-na-check.html)
