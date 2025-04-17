@@ -19,11 +19,13 @@ website:
 format:
   html:
     theme: litera
-    highlight-style: a11y-dark   # 目立つハイライトテーマ
-    code-block-border-left: "#3E8EDE"  # 左に目印ライン
-    code-background: "#f8f9fa"         # 明るめ背景
-    code-line-numbers: true            # 行番号を表示
-    code-copy: true                    # コピーアイコン表示
+    highlight-style: a11y-dark
+    code-block-border-left: "#3E8EDE"
+    code-background: "#f8f9fa"
+    code-line-numbers: true
+    code-copy: true
+    css: styles.css   # ← 忘れずに指定
+
 
 
 

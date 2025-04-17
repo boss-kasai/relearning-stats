@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>基礎統計量と欠損値の確認 – relearning-stats</title>
+<title>t検定 – relearning-stats</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -159,7 +159,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">基礎統計量と欠損値の確認</h1>
+<h1 class="title">t検定</h1>
 </div>
 
 
@@ -176,109 +176,198 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="今回やること" class="level2">
-<h2 class="anchored" data-anchor-id="今回やること">今回やること</h2>
-<p>今回やることは”基礎統計量と欠損値の確認”です。 irisデータを用いて進めていきます。</p>
+<section id="今回のお題" class="level2">
+<h2 class="anchored" data-anchor-id="今回のお題">今回のお題</h2>
+<p>今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。</p>
+<p>対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較</p>
+<p>対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較</p>
 </section>
-<section id="基礎統計量" class="level2">
-<h2 class="anchored" data-anchor-id="基礎統計量">基礎統計量</h2>
-<p>まずはデータ構造を見てみましょう。</p>
+<section id="対応のないt検定" class="level2">
+<h2 class="anchored" data-anchor-id="対応のないt検定">対応のないt検定</h2>
+<p>まずは対応のないt検定です。 今回使用するデータの中身を見ていきましょう。</p>
+<section id="データの確認" class="level3">
+<h3 class="anchored" data-anchor-id="データの確認">データの確認</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">str</span>(iris)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">data</span>(ToothGrowth)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">str</span>(ToothGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   150 obs. of  5 variables:
- $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
- $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
- $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
- $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
- $ Species     : Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<pre><code>'data.frame':   60 obs. of  3 variables:
+ $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...
+ $ supp: Factor w/ 2 levels "OJ","VC": 2 2 2 2 2 2 2 2 2 2 ...
+ $ dose: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...</code></pre>
 </div>
-</div>
-<p>この出力から、下記のことが分かります。 150 obs : 150行 5 variables: 5列</p>
-<p>$ Sepal.Length: num　はSepal.Length列がnum型のデータであることが分かります。 $ Species : Factor w/ 3 levels　はSpecies列がFactor型で３つの種類を持っていることが分かります。</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">summary</span>(iris)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">summary</span>(ToothGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
- Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
- 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
- Median :5.800   Median :3.000   Median :4.350   Median :1.300  
- Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  
- 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
- Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  
-       Species  
- setosa    :50  
- versicolor:50  
- virginica :50  
-                
-                
-                </code></pre>
+<pre><code>      len        supp         dose      
+ Min.   : 4.20   OJ:30   Min.   :0.500  
+ 1st Qu.:13.07   VC:30   1st Qu.:0.500  
+ Median :19.25           Median :1.000  
+ Mean   :18.81           Mean   :1.167  
+ 3rd Qu.:25.27           3rd Qu.:2.000  
+ Max.   :33.90           Max.   :2.000  </code></pre>
 </div>
 </div>
-<p>統計をかじっている方なら馴染み深い基礎統計量が出てきました。</p>
+<p>３つの項目があり、それぞれ下記のようになっています。</p>
 <ul>
-<li>Min. 最小値（最も小さい値）</li>
-<li>1st Qu. 第1四分位数（下位25%の境目）</li>
-<li>Median 中央値（50%の地点）</li>
-<li>Mean 平均値（算術平均）</li>
-<li>3rd Qu. 第3四分位数（上位25%の境目）</li>
-<li>Max. 最大値（最も大きい値）</li>
+<li><code>len</code> : 歯の成長量</li>
+<li><code>supp</code> : サプリメントの種類(2種OJ = オレンジジュース, VC = ビタミンC)</li>
+<li><code>dose</code> : サプリメントの摂取量</li>
 </ul>
-<p>SpeciesはFactor型なので、各カテゴリが何件ずつ登録されているかが表示されています。</p>
-<p>サンプルデータだけあって、綺麗なデータですね。</p>
+<p>早速、t検定をしていきましょう。 t検定の関数は簡単です。</p>
+<p>t.test(“従属変数名” ~ “独立変数名”, data = “データ名”)</p>
+<p>実際にやってみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">t.test</span>(len <span class="sc">~</span> supp, <span class="at">data =</span> ToothGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  len by supp
+t = 1.9153, df = 55.309, p-value = 0.06063
+alternative hypothesis: true difference in means between group OJ and group VC is not equal to 0
+95 percent confidence interval:
+ -0.1710156  7.5710156
+sample estimates:
+mean in group OJ mean in group VC 
+        20.66333         16.96333 </code></pre>
+</div>
+</div>
+<p>無事結果が出力されたので読んでいきましょう。</p>
+<pre><code>Welch Two Sample t-test</code></pre>
+<p>ウェルチの２郡間でのt検定が実施されたことが書かれています。</p>
+<pre><code>data:  len by supp</code></pre>
+<p>比較対象は len（歯の長さ）,グループ分け変数は supp（OJ vs VC）で分析が行われたことが記載されています。</p>
+<pre><code>t = 1.9153, df = 55.309, p-value = 0.06063</code></pre>
+<p>t -&gt; t値（2群の平均差を標準誤差で割った値） df -&gt; 自由度（Welchの調整による） p-value -&gt; 有意確率：</p>
+<pre><code>alternative hypothesis: true difference in means between group OJ and group VC is not equal to 0</code></pre>
+<p>仮説を書いてくれています。 「対立仮説：OJ群とVC群の平均値の真の差は0に等しくない」by DeepL</p>
+<pre><code>95 percent confidence interval:
+ -0.1710156  7.5710156</code></pre>
+<p>95%信頼区間が書かれています。 「2群の平均差は -0.17 〜 +7.57 の範囲にあると考えられる」ということです。</p>
+<pre><code>sample estimates:
+mean in group OJ mean in group VC 
+        20.66333         16.96333 </code></pre>
+<p>サンプルの２群のそれぞれの平均値です。</p>
+<p>１つのコマンドでかなり多くのことを実施して出力してくれたことが分かります。 これを手で計算していた時代があると思うと信じられないですね。</p>
+<p>今回は有意確率(p-value)が0.06063 なので5%水準で見ても有意ではありませんでした。</p>
 </section>
-<section id="欠損値の確認" class="level2">
-<h2 class="anchored" data-anchor-id="欠損値の確認">欠損値の確認</h2>
-<p>実際のデータはこんなに綺麗ではないので、しっかりみないとダメですね。 その第一歩として欠損値地の確認を行います。</p>
-<p>まずはデータフレーム全体で欠損値があるかを確認します。</p>
+</section>
+<section id="対応のあるt検定" class="level2">
+<h2 class="anchored" data-anchor-id="対応のあるt検定">対応のあるt検定</h2>
+<p>続いては、Rの組み込みデータ <code>sleep</code> を使って、対応のあるt検定の流れを見ていきます。</p>
+<section id="データの確認-1" class="level3">
+<h3 class="anchored" data-anchor-id="データの確認-1">データの確認</h3>
+<p>まずは使用するデータの中身を確認しましょう。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(iris))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">data</span>(sleep)</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">str</span>(sleep)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
+<pre><code>'data.frame':   20 obs. of  3 variables:
+ $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...
+ $ group: Factor w/ 2 levels "1","2": 1 1 1 1 1 1 1 1 1 1 ...
+ $ ID   : Factor w/ 10 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">summary</span>(sleep)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     extra        group        ID   
+ Min.   :-1.600   1:10   1      :2  
+ 1st Qu.:-0.025   2:10   2      :2  
+ Median : 0.950          3      :2  
+ Mean   : 1.540          4      :2  
+ 3rd Qu.: 3.400          5      :2  
+ Max.   : 5.500          6      :2  
+                         (Other):8  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">head</span>(sleep)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  extra group ID
+1   0.7     1  1
+2  -1.6     1  2
+3  -0.2     1  3
+4  -1.2     1  4
+5  -0.1     1  5
+6   3.4     1  6</code></pre>
 </div>
 </div>
-<p>結果はTure/FALSEの真偽値で帰ってきます。 Tureが欠損値あり、FALSEが欠損値なしです。 irisには欠損データがないみたいですね。</p>
-<p>せっかくなので、欠損値があるデータを見てみましょう。 欠損値がある組み込みデータとして、ニューヨークの大気汚染と気象データ(airquality)を使用してみます。</p>
+<p>このデータには以下の3列があります：</p>
+<ul>
+<li><code>extra</code> : 睡眠時間の増加量（数値）</li>
+<li><code>group</code> : 投与された薬剤の種類（1または2）</li>
+<li><code>ID</code> : 被験者ID（同じ被験者が両方の薬剤を試している）</li>
+</ul>
+<p>つまり、このデータは<strong>同一被験者に2種類の薬を与えた前後比較</strong>になっており、<strong>対応のあるt検定（paired t-test）</strong>が適用できます。</p>
+<hr>
+</section>
+<section id="データの変換wide形式へ" class="level3">
+<h3 class="anchored" data-anchor-id="データの変換wide形式へ">データの変換（wide形式へ）</h3>
+<p><code>t.test()</code> で対応のあるt検定をするには、2つのベクトルが必要です。 まずは <code>group</code> によって分けて、同じIDごとに列に並べ直します。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># データ全体に欠損があるか？</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">any</span>(<span class="fu">is.na</span>(airquality))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>sleep_wide <span class="ot">&lt;-</span> <span class="fu">reshape</span>(sleep, <span class="at">timevar =</span> <span class="st">"group"</span>, <span class="at">idvar =</span> <span class="st">"ID"</span>, <span class="at">direction =</span> <span class="st">"wide"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">head</span>(sleep_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
+<pre><code>  ID extra.1 extra.2
+1  1     0.7     1.9
+2  2    -1.6     0.8
+3  3    -0.2     1.1
+4  4    -1.2     0.1
+5  5    -0.1    -0.1
+6  6     3.4     4.4</code></pre>
 </div>
 </div>
-<p>このデータには欠損値があるので、TRUEが帰ってきました。</p>
-<p>次は実際の欠損の個数を確認しましょう。 このコードは２つのことを実行しています。</p>
-<ol type="1">
-<li>is.na(airquality) 　→ TRUE / FALSE の 同じ形の論理値データフレームを返します（NA なら TRUE）</li>
-<li>sum(…) 　→ TRUE を1、FALSE を0として合計する 　　→ NA の個数の合計を算出</li>
-</ol>
+<p>このようにすると <code>extra.1</code>（薬1）と <code>extra.2</code>（薬2）が並んだデータになります。 分析によっては元のデータを加工して、別のデータフレームを作成して分析を行なっていくこよはよくあります。</p>
+<hr>
+</section>
+<section id="t検定の実行" class="level3">
+<h3 class="anchored" data-anchor-id="t検定の実行">t検定の実行</h3>
+<p>それでは対応のあるt検定を実行してみましょう。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># 欠損の個数</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(airquality))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">t.test</span>(sleep_wide<span class="sc">$</span>extra<span class="fl">.1</span>, sleep_wide<span class="sc">$</span>extra<span class="fl">.2</span>, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 44</code></pre>
+<pre><code>
+    Paired t-test
+
+data:  sleep_wide$extra.1 and sleep_wide$extra.2
+t = -4.0621, df = 9, p-value = 0.002833
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -2.4598858 -0.7001142
+sample estimates:
+mean difference 
+          -1.58 </code></pre>
 </div>
 </div>
-<p>このデータには44個欠損値がありました。</p>
-<p>どの列(項目)に欠損があるのか、またどのくらいの行に欠損値があるのかを算出します。</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># 各列ごとの欠損数</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(airquality))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  Ozone Solar.R    Wind    Temp   Month     Day 
-     37       7       0       0       0       0 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># 欠損値が１つ以上ある行を算出</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">sum</span>(<span class="sc">!</span><span class="fu">complete.cases</span>(airquality))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 42</code></pre>
-</div>
-</div>
-<p>欠損値が特定の行に集中しているようであれば、行丸ごと集計から外すこともできます。 また、特定の列(項目)に欠損値が多い場合などは、その後の分析に影響してきます。</p>
-<p>心理学の質問紙調査などでは、ある程度綺麗なデータになりますが、ビジネスなどの場面では整形されていないデータで、データのクリーニングから行うことも多いので、その場合はこのような処理が大切になります。</p>
-<p>次回から分析に進んでいこうと思います。</p>
+<hr>
+</section>
+<section id="出力の読み取り" class="level3">
+<h3 class="anchored" data-anchor-id="出力の読み取り">出力の読み取り</h3>
+<pre><code>Paired t-test</code></pre>
+<p>対応のあるt検定（paired t-test）が実行されたことを示しています。</p>
+<pre><code>data:  sleep_wide$extra.1 and sleep_wide$extra.2</code></pre>
+<p>比較したのは薬1と薬2による睡眠時間の増加量です。</p>
+<pre><code>t = -4.0621, df = 9, p-value = 0.002833</code></pre>
+<ul>
+<li><code>t</code> はt値：2群の平均差を標準誤差で割った値。</li>
+<li><code>df</code> は自由度（今回は10人なので df = 9）。</li>
+<li><code>p-value</code> は有意確率：0.05より十分小さいので、有意差ありと判断できます。</li>
+</ul>
+<pre><code>alternative hypothesis: true mean difference is not equal to 0</code></pre>
+<p>対立仮説は「2群の平均に差がある（= 差が0でない）」です。</p>
+<pre><code>95 percent confidence interval:
+ -2.459885 -0.700115</code></pre>
+<p>薬剤1と薬剤2の平均差は、95%信頼区間で -2.46 〜 -0.70。 <strong>0を含まないため、有意差あり。</strong></p>
+<pre><code>sample estimates:
+mean of the differences
+                 -1.58</code></pre>
+<p>薬剤2の方が平均して 1.58 時間分 睡眠時間が長くなる傾向があります。</p>
+<hr>
+<p>こちらは有意差が出てよかったです。 私も記事を書きながら分析をしているので、両方とも有意差なしだと悲しいところでした。</p>
+</section>
+<section id="まとめ" class="level3">
+<h3 class="anchored" data-anchor-id="まとめ">まとめ</h3>
+<p>さて今回は、t検定のやり方と結果の見方を紹介しました。 ここでは書いていませんが、t検定前にやるべきことがありました。 それは別記事で書こうと思うので、t検定をやる際にはそちらもご参照ください。</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
