@@ -24,7 +24,7 @@ format:
     code-background: "#f8f9fa"
     code-line-numbers: true
     code-copy: true
-    css: styles.css   # ← 忘れずに指定
+    css: styles.css   # スタイルをcssで指定する
 
 
 

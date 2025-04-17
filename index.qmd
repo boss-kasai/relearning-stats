@@ -4,5 +4,13 @@ title: "relearning-stats"
 
 relearning-stats にようこそ！
 
+このブログは８年ぶりにRでの分析の勉強をしている人のブログです。
+統計の専門家というわけではないので、情報に誤りがあることもあります。
+参考程度にしてください。
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+基本的にはRを使っていこうと思いますが、せっかくなのでPythonとかも使ってみたいと思っています。
+
+各記事へのリンクはヘッダーから探してください。
+
+ブログの機能拡張も考えていますが、まだ使いづらくてすみません。
+

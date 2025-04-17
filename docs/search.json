@@ -4,7 +4,7 @@
     "href": "posts.html",
     "title": "記事一覧",
     "section": "",
-    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認"
+    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定"
   },
   {
     "objectID": "column.html",
@@ -25,7 +25,7 @@
     "href": "index.html",
     "title": "relearning-stats",
     "section": "",
-    "text": "relearning-stats にようこそ！\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "relearning-stats にようこそ！\nこのブログは８年ぶりにRでの分析の勉強をしている人のブログです。 統計の専門家というわけではないので、情報に誤りがあることもあります。 参考程度にしてください。\n基本的にはRを使っていこうと思いますが、せっかくなのでPythonとかも使ってみたいと思っています。\n各記事へのリンクはヘッダーから探してください。\nブログの機能拡張も考えていますが、まだ使いづらくてすみません。"
   },
   {
     "objectID": "posts/2025-04-14-r-blog-with-r.html",
@@ -179,13 +179,13 @@
     "href": "R.html",
     "title": "R",
     "section": "",
-    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認"
+    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定"
   },
   {
     "objectID": "R.html#r入門",
     "href": "R.html#r入門",
     "title": "R",
     "section": "",
-    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認"
+    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\nt検定"
   }
 ]
