@@ -1,7 +1,13 @@
 ---
 title: "t検定"
 format: html
+author: "ThePastOfDice"
+date: '2025-04-17'
+last-modified: "2025-04-17"
+categories: ["R"]
+tags: ["R", "t-test"]
 ---
+
 
 ## 今回のお題
 

@@ -2,8 +2,9 @@
 title: 'RでRのブログを作る'
 author: "ThePastOfDice"
 date: '2025-04-12'
+last-modified: '2025-04-12'
 categories: ["コラム"]
-tags: []
+tags: ["R"]
 ---
 
 ## 背景

@@ -16,6 +16,9 @@ website:
       - text: "R"
         href: R.qmd
 
+metadata-files:
+  - _metadata.yml
+
 format:
   html:
     theme: litera

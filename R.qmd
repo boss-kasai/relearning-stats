@@ -11,4 +11,5 @@ Rに関する記事をジャンル分けしてまとめたものです。
 
 - [Rの組み込みデータ](posts/2025-04-15-r-iner-data.html)
 - [基礎統計量と欠損値の確認](posts/2025-04-16-basic-stats-na-check.html)
+- [t検定をする前に](posts/2025-4-18-before-t-test.html)
 - [t検定](posts/2025-4-17-t-test.html)

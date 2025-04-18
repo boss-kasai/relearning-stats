@@ -1,10 +1,14 @@
 ---
-title: 'Rの再学習、はじめました'
+title: "Rの再学習、はじめました"
 author: "ThePastOfDice"
-date: '2025-04-12'
+date: 2025-04-12
+last-modified: 2025-04-12
 categories: ["コラム"]
 tags: []
+format: html
 ---
+
+
 
 およそ8年ぶりにRを使って再学習します。
 

@@ -4,7 +4,7 @@
     "href": "posts.html",
     "title": "記事一覧",
     "section": "",
-    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定"
+    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定をする前に\nt検定"
   },
   {
     "objectID": "column.html",
@@ -26,6 +26,97 @@
     "title": "relearning-stats",
     "section": "",
     "text": "relearning-stats にようこそ！\nこのブログは８年ぶりにRでの分析の勉強をしている人のブログです。 統計の専門家というわけではないので、情報に誤りがあることもあります。 参考程度にしてください。\n基本的にはRを使っていこうと思いますが、せっかくなのでPythonとかも使ってみたいと思っています。\n各記事へのリンクはヘッダーから探してください。\nブログの機能拡張も考えていますが、まだ使いづらくてすみません。"
+  },
+  {
+    "objectID": "posts/2025-4-18-before-t-test.html",
+    "href": "posts/2025-4-18-before-t-test.html",
+    "title": "t検定をする前に",
+    "section": "",
+    "text": "t検定のことを書こうと思ったのですが、よく考えたらt検定の前に事前に確認するべきことがあったので、今回はそのお話です。\n実際の分析の前にやった方が良いことはたくさんあると思います。 基礎統計量を見る 欠損値の確認 データの可視化 などなど\n今回はt検定前に見た方が良いかなと思う下記３つを取り上げてみます。"
+  },
+  {
+    "objectID": "posts/2025-4-18-before-t-test.html#正規性",
+    "href": "posts/2025-4-18-before-t-test.html#正規性",
+    "title": "t検定をする前に",
+    "section": "正規性",
+    "text": "正規性\n正規性とはデータが正規分布に従っている(近い)かどうかを意味します。 正規分布は、平均を中心に左右対称な釣鐘型の分布になってるやつです。 t検定や分散分析は正規分布を前提にしている分析手法なので、正規分布をしていない場合は他の分析方法を検討することになったりします。 外れ値が極端に多かったり、天井効果などは想像しやすい例かもしれません。\n今回は、有名なシャピロ・ウィルク(Shapiro-Wilk)検定をやってみます。\n\nshapiro.test(ToothGrowth$len[ToothGrowth$supp == \"OJ\"])\n\n\n    Shapiro-Wilk normality test\n\ndata:  ToothGrowth$len[ToothGrowth$supp == \"OJ\"]\nW = 0.91784, p-value = 0.02359\n\n\n１行ずつ見て行きましょう。\nShapiro-Wilk normality test\nShapiro-Wilk検を実施しましたよってことです。\ndata:  ToothGrowth$len[ToothGrowth$supp == \"OJ\"]\nToothGrowth データの中の、supp（サプリメント）が “OJ” の行だけを抜き出した、len（歯の長さ）のデータを検定対象にしたことを示しています。\nW = 0.91784, p-value = 0.02359\n\nW = 0.91784 Shapiro-Wilk検定統計量（正規性にどれだけ一致するかの指標）\np-value = 0.02359 p値：正規分布からの逸脱が偶然で起こる確率\n\np値が0.05未満なので、このToothGrowth$len[ToothGrowth$supp == \"OJ\"]は正規分布していないということになります。 t検定の記事でこのデータを使ってしまっていましたが、実際は不適切だったかもしれません。 そんな時はノンパラメトリック検定をやるんだったと思います。 なんとなくしか覚えていないので、ノンパラメトリック検定についてはまた別記事で。\nとりあえず、ToothGrowth$len[ToothGrowth$supp == \"VC\"]も正規性を確認しておきましょう。\n\nshapiro.test(ToothGrowth$len[ToothGrowth$supp == \"VC\"])\n\n\n    Shapiro-Wilk normality test\n\ndata:  ToothGrowth$len[ToothGrowth$supp == \"VC\"]\nW = 0.96567, p-value = 0.4284\n\n\n各行の解説は省略しますが、p値が0.05以上なのでこちらは正規性があったということで、正規分布とみなせます。"
+  },
+  {
+    "objectID": "posts/2025-4-18-before-t-test.html#等分散性",
+    "href": "posts/2025-4-18-before-t-test.html#等分散性",
+    "title": "t検定をする前に",
+    "section": "等分散性",
+    "text": "等分散性\n次は等分散性を見て行きましょう。 「等分散性（とうぶんさんせい、equal variance）」とは、「比較する複数のグループでデータのばらつき（＝分散）が同じくらいかどうか」を意味します。\np &gt; 0.05 → 分散が等しい（var.equal = TRUE を指定しても良い）\n\nvar.test(len ~ supp, data = ToothGrowth)\n\n\n    F test to compare two variances\n\ndata:  len by supp\nF = 0.6386, num df = 29, denom df = 29, p-value = 0.2331\nalternative hypothesis: true ratio of variances is not equal to 1\n95 percent confidence interval:\n 0.3039488 1.3416857\nsample estimates:\nratio of variances \n         0.6385951 \n\n\nさて、実行結果を１行ずつ確認して行きましょう。\nF test to compare two variances\n2つのグループ（ここでは “OJ” vs “VC”）の 分散が等しいかどうか を比較する F検定（F test）を実施したことを示しています。\ndata:  len by supp\n検定対象データがlenという変数をsuppでグループ分けしたことが出力されています。\nF = 0.6386, num df = 29, denom df = 29, p-value = 0.2331\n\nF = 0.6386 分散の比（大きい分散 / 小さい分散）に基づいて計算されたF値。1に近いほど分散が等しい。\nnum df = 29, denom df = 29 自由度：各グループのデータ数（30）−1 = 29\np-value = 0.2331 p値（有意確率）。\n\n今回の分析結果から、p値が0.05より大きいので、「分散に有意な差はない（＝等分散性あり）」と判断することができます。これならstudentのt検定ができそうですね。まぁ、正規性に問題があるのですが笑"
+  },
+  {
+    "objectID": "posts/2025-4-18-before-t-test.html#外れ値",
+    "href": "posts/2025-4-18-before-t-test.html#外れ値",
+    "title": "t検定をする前に",
+    "section": "外れ値",
+    "text": "外れ値\n最後は外れ値に関してみて行きます。 外れ値に関しては、箱ひげ図で見るのが簡単だと思います。 箱ひげ図で点（○）があれば外れ値の可能性ありです。\nboxplot() 関数では外れ値（outlier）は自動で統計的に判定されています。 この判定には、「IQR（四分位範囲）に基づくルール」が使われています。\n外れ値 = 以下のどちらかに該当する値\n  ・Q1（第1四分位数）よりも小さい → Q1 - 1.5 × IQR\n  ・Q3（第3四分位数）よりも大きい → Q3 + 1.5 × IQR\n\nIQR Interquartile Range（四分位範囲）＝ Q3 - Q1\nまずは、ここまで使用してきたToothGrowthのデータを見てみましょう。 シンプルな箱ひげ図で見てみましょう。 図があるので先にコードの説明をします。 - boxplot 箱ひげ図を作成する関数です。 - len ~ supp　lenのデータをsuppでグループ分けして、図を作成します。 - data = ToothGrowth　使用するデータを指定しています。\n\nboxplot(len ~ supp, data = ToothGrowth)\n\n\n\n\n\n\n\n\n箱ひげ図に点がないので、外れ値はなさそうです。 せっかくなので、外れ値のあるデータも見てみましょう。 cars という、speed(スピード)とdist(制動距離)についてのデータです(気になる方は、データを詳しくみてください)。 実際に箱ひげ図を作成してみましょう。 コードの解説\nboxplot(データフレーム名$列名)\n\nboxplot(cars$dist)\n\n\n\n\n\n\n\n\n120の部分に点が表示されています。 これが外れ値です。 外れ値の原因や処理方法はデータを詳しくみて判断するしかないと思います。\n外れ値の確認は一旦こんな感じでいいでしょう。 データの可視化に関しては、深くて面白い世界なのでまた別で取り上げられればと思います。 t検定など分析をやる前には、データを事前にしっかり見ておきたいですね。 では、今回はこの辺で"
+  },
+  {
+    "objectID": "posts/2025-04-16-basic-stats-na-check.html",
+    "href": "posts/2025-04-16-basic-stats-na-check.html",
+    "title": "基礎統計量と欠損値の確認",
+    "section": "",
+    "text": "今回やることは”基礎統計量と欠損値の確認”です。 irisデータを用いて進めていきます。"
+  },
+  {
+    "objectID": "posts/2025-04-16-basic-stats-na-check.html#今回やること",
+    "href": "posts/2025-04-16-basic-stats-na-check.html#今回やること",
+    "title": "基礎統計量と欠損値の確認",
+    "section": "",
+    "text": "今回やることは”基礎統計量と欠損値の確認”です。 irisデータを用いて進めていきます。"
+  },
+  {
+    "objectID": "posts/2025-04-16-basic-stats-na-check.html#基礎統計量",
+    "href": "posts/2025-04-16-basic-stats-na-check.html#基礎統計量",
+    "title": "基礎統計量と欠損値の確認",
+    "section": "基礎統計量",
+    "text": "基礎統計量\nまずはデータ構造を見てみましょう。\n\nstr(iris)\n\n'data.frame':   150 obs. of  5 variables:\n $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...\n $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...\n $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...\n $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...\n $ Species     : Factor w/ 3 levels \"setosa\",\"versicolor\",..: 1 1 1 1 1 1 1 1 1 1 ...\n\n\nこの出力から、下記のことが分かります。 150 obs : 150行 5 variables: 5列\n$ Sepal.Length: num　はSepal.Length列がnum型のデータであることが分かります。 $ Species : Factor w/ 3 levels　はSpecies列がFactor型で３つの種類を持っていることが分かります。\n\nsummary(iris)\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  \n 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  \n Median :5.800   Median :3.000   Median :4.350   Median :1.300  \n Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  \n 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  \n Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  \n       Species  \n setosa    :50  \n versicolor:50  \n virginica :50  \n                \n                \n                \n\n\n統計をかじっている方なら馴染み深い基礎統計量が出てきました。\n\nMin. 最小値（最も小さい値）\n1st Qu. 第1四分位数（下位25%の境目）\nMedian 中央値（50%の地点）\nMean 平均値（算術平均）\n3rd Qu. 第3四分位数（上位25%の境目）\nMax. 最大値（最も大きい値）\n\nSpeciesはFactor型なので、各カテゴリが何件ずつ登録されているかが表示されています。\nサンプルデータだけあって、綺麗なデータですね。"
+  },
+  {
+    "objectID": "posts/2025-04-16-basic-stats-na-check.html#欠損値の確認",
+    "href": "posts/2025-04-16-basic-stats-na-check.html#欠損値の確認",
+    "title": "基礎統計量と欠損値の確認",
+    "section": "欠損値の確認",
+    "text": "欠損値の確認\n実際のデータはこんなに綺麗ではないので、しっかりみないとダメですね。 その第一歩として欠損値地の確認を行います。\nまずはデータフレーム全体で欠損値があるかを確認します。\n\nany(is.na(iris))\n\n[1] FALSE\n\n\n結果はTure/FALSEの真偽値で帰ってきます。 Tureが欠損値あり、FALSEが欠損値なしです。 irisには欠損データがないみたいですね。\nせっかくなので、欠損値があるデータを見てみましょう。 欠損値がある組み込みデータとして、ニューヨークの大気汚染と気象データ(airquality)を使用してみます。\n\n# データ全体に欠損があるか？\nany(is.na(airquality))\n\n[1] TRUE\n\n\nこのデータには欠損値があるので、TRUEが帰ってきました。\n次は実際の欠損の個数を確認しましょう。 このコードは２つのことを実行しています。\n\nis.na(airquality) 　→ TRUE / FALSE の 同じ形の論理値データフレームを返します（NA なら TRUE）\nsum(…) 　→ TRUE を1、FALSE を0として合計する 　　→ NA の個数の合計を算出\n\n\n# 欠損の個数\nsum(is.na(airquality))\n\n[1] 44\n\n\nこのデータには44個欠損値がありました。\nどの列(項目)に欠損があるのか、またどのくらいの行に欠損値があるのかを算出します。\n\n# 各列ごとの欠損数\ncolSums(is.na(airquality))\n\n  Ozone Solar.R    Wind    Temp   Month     Day \n     37       7       0       0       0       0 \n\n# 欠損値が１つ以上ある行を算出\nsum(!complete.cases(airquality))\n\n[1] 42\n\n\n欠損値が特定の行に集中しているようであれば、行丸ごと集計から外すこともできます。 また、特定の列(項目)に欠損値が多い場合などは、その後の分析に影響してきます。\n心理学の質問紙調査などでは、ある程度綺麗なデータになりますが、ビジネスなどの場面では整形されていないデータで、データのクリーニングから行うことも多いので、その場合はこのような処理が大切になります。\n次回から分析に進んでいこうと思います。"
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-start.html",
+    "href": "posts/2025-04-14-r-blog-start.html",
+    "title": "Rの再学習、はじめました",
+    "section": "",
+    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html",
+    "href": "posts/2025-4-17-t-test.html",
+    "title": "t検定",
+    "section": "",
+    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html#今回のお題",
+    "href": "posts/2025-4-17-t-test.html#今回のお題",
+    "title": "t検定",
+    "section": "",
+    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html#対応のないt検定",
+    "href": "posts/2025-4-17-t-test.html#対応のないt検定",
+    "title": "t検定",
+    "section": "対応のないt検定",
+    "text": "対応のないt検定\nまずは対応のないt検定です。 今回使用するデータの中身を見ていきましょう。\n\nデータの確認\n\ndata(ToothGrowth)\nstr(ToothGrowth)\n\n'data.frame':   60 obs. of  3 variables:\n $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...\n $ supp: Factor w/ 2 levels \"OJ\",\"VC\": 2 2 2 2 2 2 2 2 2 2 ...\n $ dose: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...\n\nsummary(ToothGrowth)\n\n      len        supp         dose      \n Min.   : 4.20   OJ:30   Min.   :0.500  \n 1st Qu.:13.07   VC:30   1st Qu.:0.500  \n Median :19.25           Median :1.000  \n Mean   :18.81           Mean   :1.167  \n 3rd Qu.:25.27           3rd Qu.:2.000  \n Max.   :33.90           Max.   :2.000  \n\n\n３つの項目があり、それぞれ下記のようになっています。\n\nlen : 歯の成長量\nsupp : サプリメントの種類(2種OJ = オレンジジュース, VC = ビタミンC)\ndose : サプリメントの摂取量\n\n早速、t検定をしていきましょう。 t検定の関数は簡単です。\nt.test(“従属変数名” ~ “独立変数名”, data = “データ名”)\n実際にやってみましょう。\n\nt.test(len ~ supp, data = ToothGrowth)\n\n\n    Welch Two Sample t-test\n\ndata:  len by supp\nt = 1.9153, df = 55.309, p-value = 0.06063\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n95 percent confidence interval:\n -0.1710156  7.5710156\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \n\n\n無事結果が出力されたので読んでいきましょう。\nWelch Two Sample t-test\nウェルチの２郡間でのt検定が実施されたことが書かれています。\ndata:  len by supp\n比較対象は len（歯の長さ）,グループ分け変数は supp（OJ vs VC）で分析が行われたことが記載されています。\nt = 1.9153, df = 55.309, p-value = 0.06063\nt -&gt; t値（2群の平均差を標準誤差で割った値） df -&gt; 自由度（Welchの調整による） p-value -&gt; 有意確率：\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n仮説を書いてくれています。 「対立仮説：OJ群とVC群の平均値の真の差は0に等しくない」by DeepL\n95 percent confidence interval:\n -0.1710156  7.5710156\n95%信頼区間が書かれています。 「2群の平均差は -0.17 〜 +7.57 の範囲にあると考えられる」ということです。\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \nサンプルの２群のそれぞれの平均値です。\n１つのコマンドでかなり多くのことを実施して出力してくれたことが分かります。 これを手で計算していた時代があると思うと信じられないですね。\n今回は有意確率(p-value)が0.06063 なので5%水準で見ても有意ではありませんでした。"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html#対応のあるt検定",
+    "href": "posts/2025-4-17-t-test.html#対応のあるt検定",
+    "title": "t検定",
+    "section": "対応のあるt検定",
+    "text": "対応のあるt検定\n続いては、Rの組み込みデータ sleep を使って、対応のあるt検定の流れを見ていきます。\n\nデータの確認\nまずは使用するデータの中身を確認しましょう。\n\ndata(sleep)\nstr(sleep)\n\n'data.frame':   20 obs. of  3 variables:\n $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...\n $ group: Factor w/ 2 levels \"1\",\"2\": 1 1 1 1 1 1 1 1 1 1 ...\n $ ID   : Factor w/ 10 levels \"1\",\"2\",\"3\",\"4\",..: 1 2 3 4 5 6 7 8 9 10 ...\n\nsummary(sleep)\n\n     extra        group        ID   \n Min.   :-1.600   1:10   1      :2  \n 1st Qu.:-0.025   2:10   2      :2  \n Median : 0.950          3      :2  \n Mean   : 1.540          4      :2  \n 3rd Qu.: 3.400          5      :2  \n Max.   : 5.500          6      :2  \n                         (Other):8  \n\nhead(sleep)\n\n  extra group ID\n1   0.7     1  1\n2  -1.6     1  2\n3  -0.2     1  3\n4  -1.2     1  4\n5  -0.1     1  5\n6   3.4     1  6\n\n\nこのデータには以下の3列があります：\n\nextra : 睡眠時間の増加量（数値）\ngroup : 投与された薬剤の種類（1または2）\nID : 被験者ID（同じ被験者が両方の薬剤を試している）\n\nつまり、このデータは同一被験者に2種類の薬を与えた前後比較になっており、対応のあるt検定（paired t-test）が適用できます。\n\n\n\nデータの変換（wide形式へ）\nt.test() で対応のあるt検定をするには、2つのベクトルが必要です。 まずは group によって分けて、同じIDごとに列に並べ直します。\n\nsleep_wide &lt;- reshape(sleep, timevar = \"group\", idvar = \"ID\", direction = \"wide\")\nhead(sleep_wide)\n\n  ID extra.1 extra.2\n1  1     0.7     1.9\n2  2    -1.6     0.8\n3  3    -0.2     1.1\n4  4    -1.2     0.1\n5  5    -0.1    -0.1\n6  6     3.4     4.4\n\n\nこのようにすると extra.1（薬1）と extra.2（薬2）が並んだデータになります。 分析によっては元のデータを加工して、別のデータフレームを作成して分析を行なっていくこよはよくあります。\n\n\n\nt検定の実行\nそれでは対応のあるt検定を実行してみましょう。\n\nt.test(sleep_wide$extra.1, sleep_wide$extra.2, paired = TRUE)\n\n\n    Paired t-test\n\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\nt = -4.0621, df = 9, p-value = 0.002833\nalternative hypothesis: true mean difference is not equal to 0\n95 percent confidence interval:\n -2.4598858 -0.7001142\nsample estimates:\nmean difference \n          -1.58 \n\n\n\n\n\n出力の読み取り\nPaired t-test\n対応のあるt検定（paired t-test）が実行されたことを示しています。\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\n比較したのは薬1と薬2による睡眠時間の増加量です。\nt = -4.0621, df = 9, p-value = 0.002833\n\nt はt値：2群の平均差を標準誤差で割った値。\ndf は自由度（今回は10人なので df = 9）。\np-value は有意確率：0.05より十分小さいので、有意差ありと判断できます。\n\nalternative hypothesis: true mean difference is not equal to 0\n対立仮説は「2群の平均に差がある（= 差が0でない）」です。\n95 percent confidence interval:\n -2.459885 -0.700115\n薬剤1と薬剤2の平均差は、95%信頼区間で -2.46 〜 -0.70。 0を含まないため、有意差あり。\nsample estimates:\nmean of the differences\n                 -1.58\n薬剤2の方が平均して 1.58 時間分 睡眠時間が長くなる傾向があります。\n\nこちらは有意差が出てよかったです。 私も記事を書きながら分析をしているので、両方とも有意差なしだと悲しいところでした。\n\n\nまとめ\nさて今回は、t検定のやり方と結果の見方を紹介しました。 ここでは書いていませんが、t検定前にやるべきことがありました。 それは別記事で書こうと思うので、t検定をやる際にはそちらもご参照ください。"
   },
   {
     "objectID": "posts/2025-04-14-r-blog-with-r.html",
@@ -91,69 +182,6 @@
     "text": "GitHub Pagesを有効化\nGithubでの設定は最小限の解説です。\n\nリポジトリのページへ → Settings → Pages\n「Source」 → Deploy from a branch\nブランチ：main（またはmaster） / フォルダ：/docs -&gt; _siteフォルダを使用の場合はその名称で 4, 「Save」をクリック\n\nこれで一旦、サイトの公開までできます。 デザインとかまだまだ変更するべき点がありますが、一旦それは置いておきましょう。\nでは、今日はここまで。"
   },
   {
-    "objectID": "posts/2025-4-17-t-test.html",
-    "href": "posts/2025-4-17-t-test.html",
-    "title": "t検定",
-    "section": "",
-    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
-  },
-  {
-    "objectID": "posts/2025-4-17-t-test.html#今回のお題",
-    "href": "posts/2025-4-17-t-test.html#今回のお題",
-    "title": "t検定",
-    "section": "",
-    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
-  },
-  {
-    "objectID": "posts/2025-4-17-t-test.html#対応のないt検定",
-    "href": "posts/2025-4-17-t-test.html#対応のないt検定",
-    "title": "t検定",
-    "section": "対応のないt検定",
-    "text": "対応のないt検定\nまずは対応のないt検定です。 今回使用するデータの中身を見ていきましょう。\n\nデータの確認\n\ndata(ToothGrowth)\nstr(ToothGrowth)\n\n'data.frame':   60 obs. of  3 variables:\n $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...\n $ supp: Factor w/ 2 levels \"OJ\",\"VC\": 2 2 2 2 2 2 2 2 2 2 ...\n $ dose: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...\n\nsummary(ToothGrowth)\n\n      len        supp         dose      \n Min.   : 4.20   OJ:30   Min.   :0.500  \n 1st Qu.:13.07   VC:30   1st Qu.:0.500  \n Median :19.25           Median :1.000  \n Mean   :18.81           Mean   :1.167  \n 3rd Qu.:25.27           3rd Qu.:2.000  \n Max.   :33.90           Max.   :2.000  \n\n\n３つの項目があり、それぞれ下記のようになっています。\n\nlen : 歯の成長量\nsupp : サプリメントの種類(2種OJ = オレンジジュース, VC = ビタミンC)\ndose : サプリメントの摂取量\n\n早速、t検定をしていきましょう。 t検定の関数は簡単です。\nt.test(“従属変数名” ~ “独立変数名”, data = “データ名”)\n実際にやってみましょう。\n\nt.test(len ~ supp, data = ToothGrowth)\n\n\n    Welch Two Sample t-test\n\ndata:  len by supp\nt = 1.9153, df = 55.309, p-value = 0.06063\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n95 percent confidence interval:\n -0.1710156  7.5710156\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \n\n\n無事結果が出力されたので読んでいきましょう。\nWelch Two Sample t-test\nウェルチの２郡間でのt検定が実施されたことが書かれています。\ndata:  len by supp\n比較対象は len（歯の長さ）,グループ分け変数は supp（OJ vs VC）で分析が行われたことが記載されています。\nt = 1.9153, df = 55.309, p-value = 0.06063\nt -&gt; t値（2群の平均差を標準誤差で割った値） df -&gt; 自由度（Welchの調整による） p-value -&gt; 有意確率：\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n仮説を書いてくれています。 「対立仮説：OJ群とVC群の平均値の真の差は0に等しくない」by DeepL\n95 percent confidence interval:\n -0.1710156  7.5710156\n95%信頼区間が書かれています。 「2群の平均差は -0.17 〜 +7.57 の範囲にあると考えられる」ということです。\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \nサンプルの２群のそれぞれの平均値です。\n１つのコマンドでかなり多くのことを実施して出力してくれたことが分かります。 これを手で計算していた時代があると思うと信じられないですね。\n今回は有意確率(p-value)が0.06063 なので5%水準で見ても有意ではありませんでした。"
-  },
-  {
-    "objectID": "posts/2025-4-17-t-test.html#対応のあるt検定",
-    "href": "posts/2025-4-17-t-test.html#対応のあるt検定",
-    "title": "t検定",
-    "section": "対応のあるt検定",
-    "text": "対応のあるt検定\n続いては、Rの組み込みデータ sleep を使って、対応のあるt検定の流れを見ていきます。\n\nデータの確認\nまずは使用するデータの中身を確認しましょう。\n\ndata(sleep)\nstr(sleep)\n\n'data.frame':   20 obs. of  3 variables:\n $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...\n $ group: Factor w/ 2 levels \"1\",\"2\": 1 1 1 1 1 1 1 1 1 1 ...\n $ ID   : Factor w/ 10 levels \"1\",\"2\",\"3\",\"4\",..: 1 2 3 4 5 6 7 8 9 10 ...\n\nsummary(sleep)\n\n     extra        group        ID   \n Min.   :-1.600   1:10   1      :2  \n 1st Qu.:-0.025   2:10   2      :2  \n Median : 0.950          3      :2  \n Mean   : 1.540          4      :2  \n 3rd Qu.: 3.400          5      :2  \n Max.   : 5.500          6      :2  \n                         (Other):8  \n\nhead(sleep)\n\n  extra group ID\n1   0.7     1  1\n2  -1.6     1  2\n3  -0.2     1  3\n4  -1.2     1  4\n5  -0.1     1  5\n6   3.4     1  6\n\n\nこのデータには以下の3列があります：\n\nextra : 睡眠時間の増加量（数値）\ngroup : 投与された薬剤の種類（1または2）\nID : 被験者ID（同じ被験者が両方の薬剤を試している）\n\nつまり、このデータは同一被験者に2種類の薬を与えた前後比較になっており、対応のあるt検定（paired t-test）が適用できます。\n\n\n\nデータの変換（wide形式へ）\nt.test() で対応のあるt検定をするには、2つのベクトルが必要です。 まずは group によって分けて、同じIDごとに列に並べ直します。\n\nsleep_wide &lt;- reshape(sleep, timevar = \"group\", idvar = \"ID\", direction = \"wide\")\nhead(sleep_wide)\n\n  ID extra.1 extra.2\n1  1     0.7     1.9\n2  2    -1.6     0.8\n3  3    -0.2     1.1\n4  4    -1.2     0.1\n5  5    -0.1    -0.1\n6  6     3.4     4.4\n\n\nこのようにすると extra.1（薬1）と extra.2（薬2）が並んだデータになります。 分析によっては元のデータを加工して、別のデータフレームを作成して分析を行なっていくこよはよくあります。\n\n\n\nt検定の実行\nそれでは対応のあるt検定を実行してみましょう。\n\nt.test(sleep_wide$extra.1, sleep_wide$extra.2, paired = TRUE)\n\n\n    Paired t-test\n\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\nt = -4.0621, df = 9, p-value = 0.002833\nalternative hypothesis: true mean difference is not equal to 0\n95 percent confidence interval:\n -2.4598858 -0.7001142\nsample estimates:\nmean difference \n          -1.58 \n\n\n\n\n\n出力の読み取り\nPaired t-test\n対応のあるt検定（paired t-test）が実行されたことを示しています。\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\n比較したのは薬1と薬2による睡眠時間の増加量です。\nt = -4.0621, df = 9, p-value = 0.002833\n\nt はt値：2群の平均差を標準誤差で割った値。\ndf は自由度（今回は10人なので df = 9）。\np-value は有意確率：0.05より十分小さいので、有意差ありと判断できます。\n\nalternative hypothesis: true mean difference is not equal to 0\n対立仮説は「2群の平均に差がある（= 差が0でない）」です。\n95 percent confidence interval:\n -2.459885 -0.700115\n薬剤1と薬剤2の平均差は、95%信頼区間で -2.46 〜 -0.70。 0を含まないため、有意差あり。\nsample estimates:\nmean of the differences\n                 -1.58\n薬剤2の方が平均して 1.58 時間分 睡眠時間が長くなる傾向があります。\n\nこちらは有意差が出てよかったです。 私も記事を書きながら分析をしているので、両方とも有意差なしだと悲しいところでした。\n\n\nまとめ\nさて今回は、t検定のやり方と結果の見方を紹介しました。 ここでは書いていませんが、t検定前にやるべきことがありました。 それは別記事で書こうと思うので、t検定をやる際にはそちらもご参照ください。"
-  },
-  {
-    "objectID": "posts/2025-04-14-r-blog-start.html",
-    "href": "posts/2025-04-14-r-blog-start.html",
-    "title": "Rの再学習、はじめました",
-    "section": "",
-    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
-  },
-  {
-    "objectID": "posts/2025-04-16-basic-stats-na-check.html",
-    "href": "posts/2025-04-16-basic-stats-na-check.html",
-    "title": "基礎統計量と欠損値の確認",
-    "section": "",
-    "text": "今回やることは”基礎統計量と欠損値の確認”です。 irisデータを用いて進めていきます。"
-  },
-  {
-    "objectID": "posts/2025-04-16-basic-stats-na-check.html#今回やること",
-    "href": "posts/2025-04-16-basic-stats-na-check.html#今回やること",
-    "title": "基礎統計量と欠損値の確認",
-    "section": "",
-    "text": "今回やることは”基礎統計量と欠損値の確認”です。 irisデータを用いて進めていきます。"
-  },
-  {
-    "objectID": "posts/2025-04-16-basic-stats-na-check.html#基礎統計量",
-    "href": "posts/2025-04-16-basic-stats-na-check.html#基礎統計量",
-    "title": "基礎統計量と欠損値の確認",
-    "section": "基礎統計量",
-    "text": "基礎統計量\nまずはデータ構造を見てみましょう。\n\nstr(iris)\n\n'data.frame':   150 obs. of  5 variables:\n $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...\n $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...\n $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...\n $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...\n $ Species     : Factor w/ 3 levels \"setosa\",\"versicolor\",..: 1 1 1 1 1 1 1 1 1 1 ...\n\n\nこの出力から、下記のことが分かります。 150 obs : 150行 5 variables: 5列\n$ Sepal.Length: num　はSepal.Length列がnum型のデータであることが分かります。 $ Species : Factor w/ 3 levels　はSpecies列がFactor型で３つの種類を持っていることが分かります。\n\nsummary(iris)\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  \n 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  \n Median :5.800   Median :3.000   Median :4.350   Median :1.300  \n Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  \n 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  \n Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  \n       Species  \n setosa    :50  \n versicolor:50  \n virginica :50  \n                \n                \n                \n\n\n統計をかじっている方なら馴染み深い基礎統計量が出てきました。\n\nMin. 最小値（最も小さい値）\n1st Qu. 第1四分位数（下位25%の境目）\nMedian 中央値（50%の地点）\nMean 平均値（算術平均）\n3rd Qu. 第3四分位数（上位25%の境目）\nMax. 最大値（最も大きい値）\n\nSpeciesはFactor型なので、各カテゴリが何件ずつ登録されているかが表示されています。\nサンプルデータだけあって、綺麗なデータですね。"
-  },
-  {
-    "objectID": "posts/2025-04-16-basic-stats-na-check.html#欠損値の確認",
-    "href": "posts/2025-04-16-basic-stats-na-check.html#欠損値の確認",
-    "title": "基礎統計量と欠損値の確認",
-    "section": "欠損値の確認",
-    "text": "欠損値の確認\n実際のデータはこんなに綺麗ではないので、しっかりみないとダメですね。 その第一歩として欠損値地の確認を行います。\nまずはデータフレーム全体で欠損値があるかを確認します。\n\nany(is.na(iris))\n\n[1] FALSE\n\n\n結果はTure/FALSEの真偽値で帰ってきます。 Tureが欠損値あり、FALSEが欠損値なしです。 irisには欠損データがないみたいですね。\nせっかくなので、欠損値があるデータを見てみましょう。 欠損値がある組み込みデータとして、ニューヨークの大気汚染と気象データ(airquality)を使用してみます。\n\n# データ全体に欠損があるか？\nany(is.na(airquality))\n\n[1] TRUE\n\n\nこのデータには欠損値があるので、TRUEが帰ってきました。\n次は実際の欠損の個数を確認しましょう。 このコードは２つのことを実行しています。\n\nis.na(airquality) 　→ TRUE / FALSE の 同じ形の論理値データフレームを返します（NA なら TRUE）\nsum(…) 　→ TRUE を1、FALSE を0として合計する 　　→ NA の個数の合計を算出\n\n\n# 欠損の個数\nsum(is.na(airquality))\n\n[1] 44\n\n\nこのデータには44個欠損値がありました。\nどの列(項目)に欠損があるのか、またどのくらいの行に欠損値があるのかを算出します。\n\n# 各列ごとの欠損数\ncolSums(is.na(airquality))\n\n  Ozone Solar.R    Wind    Temp   Month     Day \n     37       7       0       0       0       0 \n\n# 欠損値が１つ以上ある行を算出\nsum(!complete.cases(airquality))\n\n[1] 42\n\n\n欠損値が特定の行に集中しているようであれば、行丸ごと集計から外すこともできます。 また、特定の列(項目)に欠損値が多い場合などは、その後の分析に影響してきます。\n心理学の質問紙調査などでは、ある程度綺麗なデータになりますが、ビジネスなどの場面では整形されていないデータで、データのクリーニングから行うことも多いので、その場合はこのような処理が大切になります。\n次回から分析に進んでいこうと思います。"
-  },
-  {
     "objectID": "posts/2025-04-15-r-iner-data.html",
     "href": "posts/2025-04-15-r-iner-data.html",
     "title": "Rの組み込みデータ",
@@ -179,13 +207,13 @@
     "href": "R.html",
     "title": "R",
     "section": "",
-    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定"
+    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定をする前に\nt検定"
   },
   {
     "objectID": "R.html#r入門",
     "href": "R.html#r入門",
     "title": "R",
     "section": "",
-    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\nt検定"
+    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\nt検定をする前に\nt検定"
   }
 ]

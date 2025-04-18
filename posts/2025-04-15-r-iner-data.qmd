@@ -2,8 +2,10 @@
 title: 'Rの組み込みデータ'
 author: "ThePastOfDice"
 date: '2025-04-15'
+last-modified: "2025-04-17"
 categories: ["R"]
 tags: ["R", "sample data"]
+
 ---
 
 ## R学習の際のサンプルデータ

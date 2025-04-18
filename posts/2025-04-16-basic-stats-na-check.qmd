@@ -1,6 +1,11 @@
 ---
 title: "基礎統計量と欠損値の確認"
 format: html
+author: "ThePastOfDice"
+date: '2025-04-16'
+last-modified: "2025-04-16"
+categories: ["R"]
+tags: ["R", "sample data"]
 ---
 
 ## 今回やること
