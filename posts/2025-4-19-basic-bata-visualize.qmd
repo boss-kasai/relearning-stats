@@ -1,0 +1,183 @@
+---
+title: "基本的なデータの可視化をしてみる"
+format: html
+author: "ThePastOfDice"
+date: '2025-04-19'
+last-modified: "2025-04-19"
+categories: ["R"]
+tags: ["R", "data-visualize"]
+---
+
+せっかくRを使うならデータの可視化もやりたいところですよね。
+ということで、今回は基本的なデータの可視化をやってみたいと思います。
+
+## 箱ひげ図を改造する
+
+[t検定をする前に](posts/2025-4-18-before-t-test.html)の中で箱ひげ図の作成は行いましたが、もっと見やすくしてみましょう。
+
+外れ値の含まれる`cars` のデータを使用して、図に名前やラベルをつけたり、色をつけてみやすくしてみます。
+
+
+```{r}
+str(cars)
+summary(cars)
+```
+
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+boxplot(cars$dist,
+        main = "制動距離の箱ひげ図（外れ値つき）",  # グラフタイトル
+        ylab = "距離（フィート）",                   # y軸のラベル
+        col = "lightblue",                           # 箱の背景色
+        border = "darkblue",                         # 箱の枠線の色
+        boxwex = 0.5,                                # 箱の横幅を調整（デフォルト=0.8）
+        notch = TRUE,                                # 中央のくびれを表示（中央値の信頼区間を視覚化）
+        outline = TRUE,                              # 外れ値を○で描画（デフォルトでTRUE）
+        pch = 19,                                     # 外れ値のマーカーの形（19 = 塗りつぶし丸）
+        cex = 1.2,                                    # 外れ値マーカーのサイズ（標準=1）
+        outcol = "red",                               # 外れ値の色
+        horizontal = FALSE                           # 垂直表示（TRUEにすれば水平表示になる）
+)
+```
+
+色自体はレポートにするときはあまり使わないかもしれません。ただビジネスの場などでの資料と考えると見やすくなるかもしれませんね。
+また、中央値の信頼区間をくびれで表現したりするのは面白いかなと思ったりします。
+
+## 散布図
+
+次は散布図です。
+散布図は2つの変数の関係を可視化するもので、データのばらつきや相関などを可視化できます。
+
+早速先ほどと同様に `cars` のデータで見ていきましょう。
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+plot(dist ~ speed, data = cars,
+     main = "速度と制動距離の関係",
+     xlab = "速度（mph）", ylab = "制動距離（ft）",
+     pch = 19, col = "blue")
+abline(lm(dist ~ speed, data = cars), col = "red")  # 回帰線
+```
+
+なんだか相関がありそうな図ですね。
+これでもちょっと外れ値がありそうなのが見て取れます。
+
+## ヒストグラム
+
+ヒストグラムではデータの偏りを見ることができます。
+一旦 `cars` の制動距離の分布を見てみましょう。
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+hist(cars$dist,
+     main = "制動距離の分布",
+     xlab = "制動距離（フィート）",
+     col = "lightblue", # 棒（ビン）の色
+     border = "white" # 棒の枠線の色
+     )
+
+```
+
+なんとなく綺麗な分布かなというふうに見えます。
+オプションで下記の設定も可能です。
+
+- `breaks`: 棒（ビン）の数を増減する: breaks = 20
+- `freq`: 縦軸を頻度（TRUE）か密度（FALSE）にする: freq = FALSE
+- `ylim`: 縦軸の範囲を指定する: ylim = c(0, 20)
+
+`freq`はデータに対する比率になるので、合計が１になるような小数点になっています。
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+hist(cars$dist,
+     freq = FALSE,   # ここがポイント！
+     main = "制動距離の密度ヒストグラム",
+     xlab = "距離（フィート）",
+     col = "lightgreen",
+     border = "white")
+```
+
+## 棒グラフ
+
+棒グラフはExcelなどでも馴染み深いと思いますので、説明は省略です。
+
+せっかくなので、平均値を計算してそれを棒グラフにします。
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+# 花の種類ごとの Sepal.Length（がく片の長さ）の平均を計算
+avg_sepal_length <- tapply(iris$Sepal.Length, iris$Species, mean)
+
+# 平均値で棒グラフを作成
+barplot(avg_sepal_length,
+        main = "花の種類ごとのがく片長の平均",
+        xlab = "花の種類",
+        ylab = "がく片の長さ（cm）",
+        col = c("skyblue", "lightgreen", "lightcoral"),
+        border = "white")
+
+```
+
+## 折れ線
+
+折れ線グラフも一般的なので、説明は省略です。
+今回は例として、`cars`のデータを使用します。
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+# carsデータで速度 vs 制動距離を折れ線グラフにする
+plot(cars$speed, cars$dist,
+     type = "l",             # l = line（線だけ）
+     main = "速度と制動距離の関係",
+     xlab = "速度 (mph)",
+     ylab = "制動距離 (ft)",
+     col = "blue",
+     lwd = 2)                # 線の太さ
+
+```
+
+なんだか適切ではない気もしますが、一旦これでいきましょう。
+
+
+## ペアプロット
+
+最後はペアプロットです。
+ペアプロットは複数の数値変数の組み合わせごとに散布図を描き、相関やパターンを視覚的に確認できる図です。
+散布図を一気にたくさん作る感じです。
+
+```{r}
+par(family = "Hiragino Sans") # 日本語フォントの指定
+# 基本のpairs()を使ってペアプロット
+pairs(iris[, 1:4],       # 数値列だけ使う
+      main = "irisデータセットのペアプロット",
+      pch = 21,
+      bg = c("red", "green3", "blue")[unclass(iris$Species)])
+```
+
+一気に難しい研究をやってる感じになりましたね。
+
+## 最後に
+
+図をうまく使うとデータの概要を自ら理解したり、他人に伝えるときもわかりやすいことがあります。全体をパッとみて「こんな分析してみようかな〜」みたいな方針を決めることにも役立ちます。
+
+今回はRで標準使用できるライブラリを使用してきました。
+これでも十分かもしれませんが、R界隈のデファクトスタンダード的な存在として、`ggplot2`というライブラリがあります。
+
+使い込んでいくなら、`ggplot2`もぜひ使ってみてください。
+`ggplot2`については、またいつか書けたらと思います。
+参考までにサンプルを置いておきます。
+では今日はこの辺で。
+
+```{r}
+# 最初はinstall.packages("ggplot2")を実行してください。何か聞かれるのでYes
+library(ggplot2)
+
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point() +
+  labs(title = "Sepal Size by Species",
+       x = "Sepal Length (cm)",
+       y = "Sepal Width (cm)") +
+  theme_minimal()
+
+```

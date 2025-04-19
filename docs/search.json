@@ -4,7 +4,7 @@
     "href": "posts.html",
     "title": "記事一覧",
     "section": "",
-    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定をする前に\nt検定"
+    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定"
   },
   {
     "objectID": "column.html",
@@ -26,6 +26,13 @@
     "title": "relearning-stats",
     "section": "",
     "text": "relearning-stats にようこそ！\nこのブログは８年ぶりにRでの分析の勉強をしている人のブログです。 統計の専門家というわけではないので、情報に誤りがあることもあります。 参考程度にしてください。\n基本的にはRを使っていこうと思いますが、せっかくなのでPythonとかも使ってみたいと思っています。\n各記事へのリンクはヘッダーから探してください。\nブログの機能拡張も考えていますが、まだ使いづらくてすみません。"
+  },
+  {
+    "objectID": "index.html#お願い",
+    "href": "index.html#お願い",
+    "title": "relearning-stats",
+    "section": "お願い",
+    "text": "お願い\nいつでも面白いサンプルデータを求めています。 「こんなデータが公開されているよ」とかって情報がありましたら、教えていただきたいです。"
   },
   {
     "objectID": "posts/2025-4-18-before-t-test.html",
@@ -84,13 +91,6 @@
     "text": "欠損値の確認\n実際のデータはこんなに綺麗ではないので、しっかりみないとダメですね。 その第一歩として欠損値地の確認を行います。\nまずはデータフレーム全体で欠損値があるかを確認します。\n\nany(is.na(iris))\n\n[1] FALSE\n\n\n結果はTure/FALSEの真偽値で帰ってきます。 Tureが欠損値あり、FALSEが欠損値なしです。 irisには欠損データがないみたいですね。\nせっかくなので、欠損値があるデータを見てみましょう。 欠損値がある組み込みデータとして、ニューヨークの大気汚染と気象データ(airquality)を使用してみます。\n\n# データ全体に欠損があるか？\nany(is.na(airquality))\n\n[1] TRUE\n\n\nこのデータには欠損値があるので、TRUEが帰ってきました。\n次は実際の欠損の個数を確認しましょう。 このコードは２つのことを実行しています。\n\nis.na(airquality) 　→ TRUE / FALSE の 同じ形の論理値データフレームを返します（NA なら TRUE）\nsum(…) 　→ TRUE を1、FALSE を0として合計する 　　→ NA の個数の合計を算出\n\n\n# 欠損の個数\nsum(is.na(airquality))\n\n[1] 44\n\n\nこのデータには44個欠損値がありました。\nどの列(項目)に欠損があるのか、またどのくらいの行に欠損値があるのかを算出します。\n\n# 各列ごとの欠損数\ncolSums(is.na(airquality))\n\n  Ozone Solar.R    Wind    Temp   Month     Day \n     37       7       0       0       0       0 \n\n# 欠損値が１つ以上ある行を算出\nsum(!complete.cases(airquality))\n\n[1] 42\n\n\n欠損値が特定の行に集中しているようであれば、行丸ごと集計から外すこともできます。 また、特定の列(項目)に欠損値が多い場合などは、その後の分析に影響してきます。\n心理学の質問紙調査などでは、ある程度綺麗なデータになりますが、ビジネスなどの場面では整形されていないデータで、データのクリーニングから行うことも多いので、その場合はこのような処理が大切になります。\n次回から分析に進んでいこうと思います。"
   },
   {
-    "objectID": "posts/2025-04-14-r-blog-start.html",
-    "href": "posts/2025-04-14-r-blog-start.html",
-    "title": "Rの再学習、はじめました",
-    "section": "",
-    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
-  },
-  {
     "objectID": "posts/2025-4-17-t-test.html",
     "href": "posts/2025-4-17-t-test.html",
     "title": "t検定",
@@ -117,6 +117,69 @@
     "title": "t検定",
     "section": "対応のあるt検定",
     "text": "対応のあるt検定\n続いては、Rの組み込みデータ sleep を使って、対応のあるt検定の流れを見ていきます。\n\nデータの確認\nまずは使用するデータの中身を確認しましょう。\n\ndata(sleep)\nstr(sleep)\n\n'data.frame':   20 obs. of  3 variables:\n $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...\n $ group: Factor w/ 2 levels \"1\",\"2\": 1 1 1 1 1 1 1 1 1 1 ...\n $ ID   : Factor w/ 10 levels \"1\",\"2\",\"3\",\"4\",..: 1 2 3 4 5 6 7 8 9 10 ...\n\nsummary(sleep)\n\n     extra        group        ID   \n Min.   :-1.600   1:10   1      :2  \n 1st Qu.:-0.025   2:10   2      :2  \n Median : 0.950          3      :2  \n Mean   : 1.540          4      :2  \n 3rd Qu.: 3.400          5      :2  \n Max.   : 5.500          6      :2  \n                         (Other):8  \n\nhead(sleep)\n\n  extra group ID\n1   0.7     1  1\n2  -1.6     1  2\n3  -0.2     1  3\n4  -1.2     1  4\n5  -0.1     1  5\n6   3.4     1  6\n\n\nこのデータには以下の3列があります：\n\nextra : 睡眠時間の増加量（数値）\ngroup : 投与された薬剤の種類（1または2）\nID : 被験者ID（同じ被験者が両方の薬剤を試している）\n\nつまり、このデータは同一被験者に2種類の薬を与えた前後比較になっており、対応のあるt検定（paired t-test）が適用できます。\n\n\n\nデータの変換（wide形式へ）\nt.test() で対応のあるt検定をするには、2つのベクトルが必要です。 まずは group によって分けて、同じIDごとに列に並べ直します。\n\nsleep_wide &lt;- reshape(sleep, timevar = \"group\", idvar = \"ID\", direction = \"wide\")\nhead(sleep_wide)\n\n  ID extra.1 extra.2\n1  1     0.7     1.9\n2  2    -1.6     0.8\n3  3    -0.2     1.1\n4  4    -1.2     0.1\n5  5    -0.1    -0.1\n6  6     3.4     4.4\n\n\nこのようにすると extra.1（薬1）と extra.2（薬2）が並んだデータになります。 分析によっては元のデータを加工して、別のデータフレームを作成して分析を行なっていくこよはよくあります。\n\n\n\nt検定の実行\nそれでは対応のあるt検定を実行してみましょう。\n\nt.test(sleep_wide$extra.1, sleep_wide$extra.2, paired = TRUE)\n\n\n    Paired t-test\n\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\nt = -4.0621, df = 9, p-value = 0.002833\nalternative hypothesis: true mean difference is not equal to 0\n95 percent confidence interval:\n -2.4598858 -0.7001142\nsample estimates:\nmean difference \n          -1.58 \n\n\n\n\n\n出力の読み取り\nPaired t-test\n対応のあるt検定（paired t-test）が実行されたことを示しています。\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\n比較したのは薬1と薬2による睡眠時間の増加量です。\nt = -4.0621, df = 9, p-value = 0.002833\n\nt はt値：2群の平均差を標準誤差で割った値。\ndf は自由度（今回は10人なので df = 9）。\np-value は有意確率：0.05より十分小さいので、有意差ありと判断できます。\n\nalternative hypothesis: true mean difference is not equal to 0\n対立仮説は「2群の平均に差がある（= 差が0でない）」です。\n95 percent confidence interval:\n -2.459885 -0.700115\n薬剤1と薬剤2の平均差は、95%信頼区間で -2.46 〜 -0.70。 0を含まないため、有意差あり。\nsample estimates:\nmean of the differences\n                 -1.58\n薬剤2の方が平均して 1.58 時間分 睡眠時間が長くなる傾向があります。\n\nこちらは有意差が出てよかったです。 私も記事を書きながら分析をしているので、両方とも有意差なしだと悲しいところでした。\n\n\nまとめ\nさて今回は、t検定のやり方と結果の見方を紹介しました。 ここでは書いていませんが、t検定前にやるべきことがありました。 それは別記事で書こうと思うので、t検定をやる際にはそちらもご参照ください。"
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-start.html",
+    "href": "posts/2025-04-14-r-blog-start.html",
+    "title": "Rの再学習、はじめました",
+    "section": "",
+    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html",
+    "href": "posts/2025-4-19-basic-bata-visualize.html",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "",
+    "text": "せっかくRを使うならデータの可視化もやりたいところですよね。 ということで、今回は基本的なデータの可視化をやってみたいと思います。"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#箱ひげ図を改造する",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#箱ひげ図を改造する",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "箱ひげ図を改造する",
+    "text": "箱ひげ図を改造する\nt検定をする前にの中で箱ひげ図の作成は行いましたが、もっと見やすくしてみましょう。\n外れ値の含まれるcars のデータを使用して、図に名前やラベルをつけたり、色をつけてみやすくしてみます。\n\nstr(cars)\n\n'data.frame':   50 obs. of  2 variables:\n $ speed: num  4 4 7 7 8 9 10 10 10 11 ...\n $ dist : num  2 10 4 22 16 10 18 26 34 17 ...\n\nsummary(cars)\n\n     speed           dist       \n Min.   : 4.0   Min.   :  2.00  \n 1st Qu.:12.0   1st Qu.: 26.00  \n Median :15.0   Median : 36.00  \n Mean   :15.4   Mean   : 42.98  \n 3rd Qu.:19.0   3rd Qu.: 56.00  \n Max.   :25.0   Max.   :120.00  \n\n\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\nboxplot(cars$dist,\n        main = \"制動距離の箱ひげ図（外れ値つき）\",  # グラフタイトル\n        ylab = \"距離（フィート）\",                   # y軸のラベル\n        col = \"lightblue\",                           # 箱の背景色\n        border = \"darkblue\",                         # 箱の枠線の色\n        boxwex = 0.5,                                # 箱の横幅を調整（デフォルト=0.8）\n        notch = TRUE,                                # 中央のくびれを表示（中央値の信頼区間を視覚化）\n        outline = TRUE,                              # 外れ値を○で描画（デフォルトでTRUE）\n        pch = 19,                                     # 外れ値のマーカーの形（19 = 塗りつぶし丸）\n        cex = 1.2,                                    # 外れ値マーカーのサイズ（標準=1）\n        outcol = \"red\",                               # 外れ値の色\n        horizontal = FALSE                           # 垂直表示（TRUEにすれば水平表示になる）\n)\n\n\n\n\n\n\n\n\n色自体はレポートにするときはあまり使わないかもしれません。ただビジネスの場などでの資料と考えると見やすくなるかもしれませんね。 また、中央値の信頼区間をくびれで表現したりするのは面白いかなと思ったりします。"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#散布図",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#散布図",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "散布図",
+    "text": "散布図\n次は散布図です。 散布図は2つの変数の関係を可視化するもので、データのばらつきや相関などを可視化できます。\n早速先ほどと同様に cars のデータで見ていきましょう。\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\nplot(dist ~ speed, data = cars,\n     main = \"速度と制動距離の関係\",\n     xlab = \"速度（mph）\", ylab = \"制動距離（ft）\",\n     pch = 19, col = \"blue\")\nabline(lm(dist ~ speed, data = cars), col = \"red\")  # 回帰線\n\n\n\n\n\n\n\n\nなんだか相関がありそうな図ですね。 これでもちょっと外れ値がありそうなのが見て取れます。"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#ヒストグラム",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#ヒストグラム",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "ヒストグラム",
+    "text": "ヒストグラム\nヒストグラムではデータの偏りを見ることができます。 一旦 cars の制動距離の分布を見てみましょう。\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\nhist(cars$dist,\n     main = \"制動距離の分布\",\n     xlab = \"制動距離（フィート）\",\n     col = \"lightblue\", # 棒（ビン）の色\n     border = \"white\" # 棒の枠線の色\n     )\n\n\n\n\n\n\n\n\nなんとなく綺麗な分布かなというふうに見えます。 オプションで下記の設定も可能です。\n\nbreaks: 棒（ビン）の数を増減する: breaks = 20\nfreq: 縦軸を頻度（TRUE）か密度（FALSE）にする: freq = FALSE\nylim: 縦軸の範囲を指定する: ylim = c(0, 20)\n\nfreqはデータに対する比率になるので、合計が１になるような小数点になっています。\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\nhist(cars$dist,\n     freq = FALSE,   # ここがポイント！\n     main = \"制動距離の密度ヒストグラム\",\n     xlab = \"距離（フィート）\",\n     col = \"lightgreen\",\n     border = \"white\")"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#棒グラフ",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#棒グラフ",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "棒グラフ",
+    "text": "棒グラフ\n棒グラフはExcelなどでも馴染み深いと思いますので、説明は省略です。\nせっかくなので、平均値を計算してそれを棒グラフにします。\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\n# 花の種類ごとの Sepal.Length（がく片の長さ）の平均を計算\navg_sepal_length &lt;- tapply(iris$Sepal.Length, iris$Species, mean)\n\n# 平均値で棒グラフを作成\nbarplot(avg_sepal_length,\n        main = \"花の種類ごとのがく片長の平均\",\n        xlab = \"花の種類\",\n        ylab = \"がく片の長さ（cm）\",\n        col = c(\"skyblue\", \"lightgreen\", \"lightcoral\"),\n        border = \"white\")"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#折れ線",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#折れ線",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "折れ線",
+    "text": "折れ線\n折れ線グラフも一般的なので、説明は省略です。 今回は例として、carsのデータを使用します。\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\n# carsデータで速度 vs 制動距離を折れ線グラフにする\nplot(cars$speed, cars$dist,\n     type = \"l\",             # l = line（線だけ）\n     main = \"速度と制動距離の関係\",\n     xlab = \"速度 (mph)\",\n     ylab = \"制動距離 (ft)\",\n     col = \"blue\",\n     lwd = 2)                # 線の太さ\n\n\n\n\n\n\n\n\nなんだか適切ではない気もしますが、一旦これでいきましょう。"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#ペアプロット",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#ペアプロット",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "ペアプロット",
+    "text": "ペアプロット\n最後はペアプロットです。 ペアプロットは複数の数値変数の組み合わせごとに散布図を描き、相関やパターンを視覚的に確認できる図です。 散布図を一気にたくさん作る感じです。\n\npar(family = \"Hiragino Sans\") # 日本語フォントの指定\n# 基本のpairs()を使ってペアプロット\npairs(iris[, 1:4],       # 数値列だけ使う\n      main = \"irisデータセットのペアプロット\",\n      pch = 21,\n      bg = c(\"red\", \"green3\", \"blue\")[unclass(iris$Species)])\n\n\n\n\n\n\n\n\n一気に難しい研究をやってる感じになりましたね。"
+  },
+  {
+    "objectID": "posts/2025-4-19-basic-bata-visualize.html#最後に",
+    "href": "posts/2025-4-19-basic-bata-visualize.html#最後に",
+    "title": "基本的なデータの可視化をしてみる",
+    "section": "最後に",
+    "text": "最後に\n図をうまく使うとデータの概要を自ら理解したり、他人に伝えるときもわかりやすいことがあります。全体をパッとみて「こんな分析してみようかな〜」みたいな方針を決めることにも役立ちます。\n今回はRで標準使用できるライブラリを使用してきました。 これでも十分かもしれませんが、R界隈のデファクトスタンダード的な存在として、ggplot2というライブラリがあります。\n使い込んでいくなら、ggplot2もぜひ使ってみてください。 ggplot2については、またいつか書けたらと思います。 参考までにサンプルを置いておきます。 では今日はこの辺で。\n\n# 最初はinstall.packages(\"ggplot2\")を実行してください。何か聞かれるのでYes\nlibrary(ggplot2)\n\nggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +\n  geom_point() +\n  labs(title = \"Sepal Size by Species\",\n       x = \"Sepal Length (cm)\",\n       y = \"Sepal Width (cm)\") +\n  theme_minimal()"
   },
   {
     "objectID": "posts/2025-04-14-r-blog-with-r.html",
@@ -207,13 +270,13 @@
     "href": "R.html",
     "title": "R",
     "section": "",
-    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\nt検定をする前に\nt検定"
+    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定"
   },
   {
     "objectID": "R.html#r入門",
     "href": "R.html#r入門",
     "title": "R",
     "section": "",
-    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\nt検定をする前に\nt検定"
+    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定"
   }
 ]
