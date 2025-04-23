@@ -11,3 +11,4 @@ format: html
 
 - [Rブログはじめました](posts/2025-04-14-r-blog-start.html)
 - [RでRのブログを作る](posts/2025-04-14-r-blog-with-r.html)
+- [ラボラトリー方式はラボを出られるか](posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html)
