@@ -11,6 +11,7 @@ author: "ThePastOfDice"
 - [基本的なデータの可視化をしてみる](posts/2025-4-19-basic-bata-visualize.html)
 - [t検定をする前に](posts/2025-4-18-before-t-test.html)
 - [t検定](posts/2025-4-17-t-test.html)
+- [分散分析 - 導入と独立一元配列](posts/2025-4-24-aov1.html)
 
 
 - [ラボラトリー方式はラボを出られるか](posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html)

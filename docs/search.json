@@ -4,7 +4,7 @@
     "href": "posts.html",
     "title": "記事一覧",
     "section": "",
-    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定\nラボラトリー方式はラボを出られるか"
+    "text": "記事一覧\n\nRブログはじめました\nRでRのブログを作る\nRの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定\n分散分析 - 導入と独立一元配列\nラボラトリー方式はラボを出られるか"
   },
   {
     "objectID": "column.html",
@@ -91,76 +91,6 @@
     "text": "欠損値の確認\n実際のデータはこんなに綺麗ではないので、しっかりみないとダメですね。 その第一歩として欠損値地の確認を行います。\nまずはデータフレーム全体で欠損値があるかを確認します。\n\nany(is.na(iris))\n\n[1] FALSE\n\n\n結果はTure/FALSEの真偽値で帰ってきます。 Tureが欠損値あり、FALSEが欠損値なしです。 irisには欠損データがないみたいですね。\nせっかくなので、欠損値があるデータを見てみましょう。 欠損値がある組み込みデータとして、ニューヨークの大気汚染と気象データ(airquality)を使用してみます。\n\n# データ全体に欠損があるか？\nany(is.na(airquality))\n\n[1] TRUE\n\n\nこのデータには欠損値があるので、TRUEが帰ってきました。\n次は実際の欠損の個数を確認しましょう。 このコードは２つのことを実行しています。\n\nis.na(airquality) 　→ TRUE / FALSE の 同じ形の論理値データフレームを返します（NA なら TRUE）\nsum(…) 　→ TRUE を1、FALSE を0として合計する 　　→ NA の個数の合計を算出\n\n\n# 欠損の個数\nsum(is.na(airquality))\n\n[1] 44\n\n\nこのデータには44個欠損値がありました。\nどの列(項目)に欠損があるのか、またどのくらいの行に欠損値があるのかを算出します。\n\n# 各列ごとの欠損数\ncolSums(is.na(airquality))\n\n  Ozone Solar.R    Wind    Temp   Month     Day \n     37       7       0       0       0       0 \n\n# 欠損値が１つ以上ある行を算出\nsum(!complete.cases(airquality))\n\n[1] 42\n\n\n欠損値が特定の行に集中しているようであれば、行丸ごと集計から外すこともできます。 また、特定の列(項目)に欠損値が多い場合などは、その後の分析に影響してきます。\n心理学の質問紙調査などでは、ある程度綺麗なデータになりますが、ビジネスなどの場面では整形されていないデータで、データのクリーニングから行うことも多いので、その場合はこのような処理が大切になります。\n次回から分析に進んでいこうと思います。"
   },
   {
-    "objectID": "posts/2025-4-17-t-test.html",
-    "href": "posts/2025-4-17-t-test.html",
-    "title": "t検定",
-    "section": "",
-    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
-  },
-  {
-    "objectID": "posts/2025-4-17-t-test.html#今回のお題",
-    "href": "posts/2025-4-17-t-test.html#今回のお題",
-    "title": "t検定",
-    "section": "",
-    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
-  },
-  {
-    "objectID": "posts/2025-4-17-t-test.html#対応のないt検定",
-    "href": "posts/2025-4-17-t-test.html#対応のないt検定",
-    "title": "t検定",
-    "section": "対応のないt検定",
-    "text": "対応のないt検定\nまずは対応のないt検定です。 今回使用するデータの中身を見ていきましょう。\n\nデータの確認\n\ndata(ToothGrowth)\nstr(ToothGrowth)\n\n'data.frame':   60 obs. of  3 variables:\n $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...\n $ supp: Factor w/ 2 levels \"OJ\",\"VC\": 2 2 2 2 2 2 2 2 2 2 ...\n $ dose: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...\n\nsummary(ToothGrowth)\n\n      len        supp         dose      \n Min.   : 4.20   OJ:30   Min.   :0.500  \n 1st Qu.:13.07   VC:30   1st Qu.:0.500  \n Median :19.25           Median :1.000  \n Mean   :18.81           Mean   :1.167  \n 3rd Qu.:25.27           3rd Qu.:2.000  \n Max.   :33.90           Max.   :2.000  \n\n\n３つの項目があり、それぞれ下記のようになっています。\n\nlen : 歯の成長量\nsupp : サプリメントの種類(2種OJ = オレンジジュース, VC = ビタミンC)\ndose : サプリメントの摂取量\n\n早速、t検定をしていきましょう。 t検定の関数は簡単です。\nt.test(“従属変数名” ~ “独立変数名”, data = “データ名”)\n実際にやってみましょう。\n\nt.test(len ~ supp, data = ToothGrowth)\n\n\n    Welch Two Sample t-test\n\ndata:  len by supp\nt = 1.9153, df = 55.309, p-value = 0.06063\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n95 percent confidence interval:\n -0.1710156  7.5710156\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \n\n\n無事結果が出力されたので読んでいきましょう。\nWelch Two Sample t-test\nウェルチの２郡間でのt検定が実施されたことが書かれています。\ndata:  len by supp\n比較対象は len（歯の長さ）,グループ分け変数は supp（OJ vs VC）で分析が行われたことが記載されています。\nt = 1.9153, df = 55.309, p-value = 0.06063\nt -&gt; t値（2群の平均差を標準誤差で割った値） df -&gt; 自由度（Welchの調整による） p-value -&gt; 有意確率：\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n仮説を書いてくれています。 「対立仮説：OJ群とVC群の平均値の真の差は0に等しくない」by DeepL\n95 percent confidence interval:\n -0.1710156  7.5710156\n95%信頼区間が書かれています。 「2群の平均差は -0.17 〜 +7.57 の範囲にあると考えられる」ということです。\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \nサンプルの２群のそれぞれの平均値です。\n１つのコマンドでかなり多くのことを実施して出力してくれたことが分かります。 これを手で計算していた時代があると思うと信じられないですね。\n今回は有意確率(p-value)が0.06063 なので5%水準で見ても有意ではありませんでした。"
-  },
-  {
-    "objectID": "posts/2025-4-17-t-test.html#対応のあるt検定",
-    "href": "posts/2025-4-17-t-test.html#対応のあるt検定",
-    "title": "t検定",
-    "section": "対応のあるt検定",
-    "text": "対応のあるt検定\n続いては、Rの組み込みデータ sleep を使って、対応のあるt検定の流れを見ていきます。\n\nデータの確認\nまずは使用するデータの中身を確認しましょう。\n\ndata(sleep)\nstr(sleep)\n\n'data.frame':   20 obs. of  3 variables:\n $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...\n $ group: Factor w/ 2 levels \"1\",\"2\": 1 1 1 1 1 1 1 1 1 1 ...\n $ ID   : Factor w/ 10 levels \"1\",\"2\",\"3\",\"4\",..: 1 2 3 4 5 6 7 8 9 10 ...\n\nsummary(sleep)\n\n     extra        group        ID   \n Min.   :-1.600   1:10   1      :2  \n 1st Qu.:-0.025   2:10   2      :2  \n Median : 0.950          3      :2  \n Mean   : 1.540          4      :2  \n 3rd Qu.: 3.400          5      :2  \n Max.   : 5.500          6      :2  \n                         (Other):8  \n\nhead(sleep)\n\n  extra group ID\n1   0.7     1  1\n2  -1.6     1  2\n3  -0.2     1  3\n4  -1.2     1  4\n5  -0.1     1  5\n6   3.4     1  6\n\n\nこのデータには以下の3列があります：\n\nextra : 睡眠時間の増加量（数値）\ngroup : 投与された薬剤の種類（1または2）\nID : 被験者ID（同じ被験者が両方の薬剤を試している）\n\nつまり、このデータは同一被験者に2種類の薬を与えた前後比較になっており、対応のあるt検定（paired t-test）が適用できます。\n\n\n\nデータの変換（wide形式へ）\nt.test() で対応のあるt検定をするには、2つのベクトルが必要です。 まずは group によって分けて、同じIDごとに列に並べ直します。\n\nsleep_wide &lt;- reshape(sleep, timevar = \"group\", idvar = \"ID\", direction = \"wide\")\nhead(sleep_wide)\n\n  ID extra.1 extra.2\n1  1     0.7     1.9\n2  2    -1.6     0.8\n3  3    -0.2     1.1\n4  4    -1.2     0.1\n5  5    -0.1    -0.1\n6  6     3.4     4.4\n\n\nこのようにすると extra.1（薬1）と extra.2（薬2）が並んだデータになります。 分析によっては元のデータを加工して、別のデータフレームを作成して分析を行なっていくこよはよくあります。\n\n\n\nt検定の実行\nそれでは対応のあるt検定を実行してみましょう。\n\nt.test(sleep_wide$extra.1, sleep_wide$extra.2, paired = TRUE)\n\n\n    Paired t-test\n\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\nt = -4.0621, df = 9, p-value = 0.002833\nalternative hypothesis: true mean difference is not equal to 0\n95 percent confidence interval:\n -2.4598858 -0.7001142\nsample estimates:\nmean difference \n          -1.58 \n\n\n\n\n\n出力の読み取り\nPaired t-test\n対応のあるt検定（paired t-test）が実行されたことを示しています。\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\n比較したのは薬1と薬2による睡眠時間の増加量です。\nt = -4.0621, df = 9, p-value = 0.002833\n\nt はt値：2群の平均差を標準誤差で割った値。\ndf は自由度（今回は10人なので df = 9）。\np-value は有意確率：0.05より十分小さいので、有意差ありと判断できます。\n\nalternative hypothesis: true mean difference is not equal to 0\n対立仮説は「2群の平均に差がある（= 差が0でない）」です。\n95 percent confidence interval:\n -2.459885 -0.700115\n薬剤1と薬剤2の平均差は、95%信頼区間で -2.46 〜 -0.70。 0を含まないため、有意差あり。\nsample estimates:\nmean of the differences\n                 -1.58\n薬剤2の方が平均して 1.58 時間分 睡眠時間が長くなる傾向があります。\n\nこちらは有意差が出てよかったです。 私も記事を書きながら分析をしているので、両方とも有意差なしだと悲しいところでした。\n\n\nまとめ\nさて今回は、t検定のやり方と結果の見方を紹介しました。 ここでは書いていませんが、t検定前にやるべきことがありました。 それは別記事で書こうと思うので、t検定をやる際にはそちらもご参照ください。"
-  },
-  {
-    "objectID": "posts/2025-04-14-r-blog-start.html",
-    "href": "posts/2025-04-14-r-blog-start.html",
-    "title": "Rの再学習、はじめました",
-    "section": "",
-    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
-  },
-  {
-    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html",
-    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html",
-    "title": "ラボラトリー方式はラボを出られるか",
-    "section": "",
-    "text": "私は大学時代にラボラトリー方式の体験学習というものを授業で何度も体験しました。 それ自体は面白い経験でしたし、今でも価値が一定あったと思っています。 しかし、大学を卒業して社会に出てから違和感を感じる部分もありました。 大学自体の友人とラボラトリー方式の体験学習について話す機会があったので、そこで考えたこと・思ったことについてまとめてみました。"
-  },
-  {
-    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習とは何か",
-    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習とは何か",
-    "title": "ラボラトリー方式はラボを出られるか",
-    "section": "ラボラトリー方式の体験学習とは何か",
-    "text": "ラボラトリー方式の体験学習とは何か\n専門的な話は書籍などに任せますが、ラボラトリー方式の体験学習とは、 「特別に設計された人と人とが関わる場 において、参加者自身の行動や関係性を素材にしながら、 そこでの体験を通し て人間関係を学ぶ方法」です(出典)。 教科書などの教材があるわけではなく、特別に設計された人と人が関わる場(ラボ)での行動や感情などを題材に人間関係を学ぶわけです。人間関係といっていますが、自分自身について気づく場でもあります。 この説明だけではあまり分からないと思いますので、もう少し具体的に説明します。 基本的な流れは下記のような感じです。 - グループワーク - 振り返り - 振り返りの共有\nまずは、就活でやるようなグループワークを行います。 グループワーク中はその中でワークと並行して、その中で起こっていることに注目します。 グループワーク後に、そのワーク中に何が起きていたのかを個人で振り返ります。 その後、振り返りの内容をグループで共有します。 グループワークの中で、誰かの言った一言が方向を決めたり、自然と役割分担がでたり、そう言ったグループ内で起きた動きや、誰かの言った発言で自分は発言しづらくなったとか、そう言った個人の中での感情の動きなども気付きになります。\nこのワーク自体は結構面白いと思います。"
-  },
-  {
-    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習のメリット",
-    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習のメリット",
-    "title": "ラボラトリー方式はラボを出られるか",
-    "section": "ラボラトリー方式の体験学習のメリット",
-    "text": "ラボラトリー方式の体験学習のメリット\nここからは私が今考えるラボラトリー方式の体験学習の良かった点です。 一般的に言われていることと違っても、これは個人の感じたことなので許してください。\n\n自分に敏感になれる\n最も価値のあった成長は自分に感情に敏感になれたことです。意外と自分の気持ちについて気が付かないものです。 自分がイライラしているのか、悲しいのか、怒っているのか、そう言ったネガティブな感情を弁別するのは難しいことが多いです。それをリアルタイム、もしくは早い段階で検知できると他人との軋轢をある程度カバーすることができます。\n\n\n挑戦的なことができる\nラボラトリー方式のいい部分は、日常から分離された環境であるからそこいつも自分がやらない挑戦的な姿勢を試すことができることです。 ワークの中では、ロールで指定されるものもあり、普段自分がやらないロールを実践することで道の自分を検証することができます。日常生活でやると「あいつキャラが変わった」みたいに思われることもあります。しかし、日常から切り離された環境だからこそ、新しい自分を試すことができます。"
-  },
-  {
-    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#大学の授業での限界",
-    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#大学の授業での限界",
-    "title": "ラボラトリー方式はラボを出られるか",
-    "section": "大学の授業での限界",
-    "text": "大学の授業での限界\n\n譲れないものがない\n私は人間関係の軋轢が生まれるのは、譲れないものがある時が多いのだと思ういます。ワークで何かタスクをこなす場合でも、そのタスクをこなす絶対的な必要性がないのです。仕事などでは売り上げへのコミットや自らの成果・責任などの影響を抱えています。家庭では、お金の使い方や子育てなどの譲れない問題があるでしょう。学生でも部活やクラス対抗の学園祭などがあれば、妥協できない強い気持ちがあるでしょう。 このようにタスク自体の優先度が高い場合、よりリアルな衝突が起きます。 しかし、ラボラトリーの中ではそこまで熱量のある問題を作ることができません。だからこそラボな部分はあると思うのですが。社会人がこのワークをやれば、普段はリスクなどの面から挑戦的な新しい姿勢やタスクに没頭してしまうことで見えない関係性(プロセス)をラボラトリーで見ることができると思います。しかし、学生が授業で集中的にラボラトリーをやっても、日常生活への汎用的な気づきにならないように思います。 学生時代にやったラボでの経験と、社会に出てからの実社会での気づきが別物として認識されてしまうのだと思います。\n\n\n同質集団すぎた\n大学でのラボラトリー方式の体験学習は、その参加者の多様性においてとても大きな問題を抱えていたと思います。年齢、学力、親の所得、育成環境がかなり同質な集団が大学には揃ってしまいます。特に、私のいた大学は9割程度は自宅からの通学生で地域的多様性もありませんでした。実社会に出ると、年齢、その集団での職務時間(職場での先輩後輩)、バックグラウンドの違う人たちと関わっていくことになります。 さらに取引先など利害関係も関わりかなり複雑になっていると思います。そう言ったものによる関係性の複雑さやアプローチの難しさは、大学時代はほとんど感じませんでした。 良くも悪くも”良い子”が集まっていたのだと思います。二日酔いで登場してワーク中に眠ったり、「今日はやる気がない」とサボる人もいませんでした。みんなある程度ワークの意図を理解して協力する前提で、ワークに参加します。前提条件が綺麗すぎるのだと思います。 もし今私が大学に戻るなら、ちょっと辺なことをしたいと思います。 また、年齢や状況が違う人たちとやってみたいとも思います。"
-  },
-  {
-    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式はラボを出られるか",
-    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式はラボを出られるか",
-    "title": "ラボラトリー方式はラボを出られるか",
-    "section": "ラボラトリー方式はラボを出られるか",
-    "text": "ラボラトリー方式はラボを出られるか\n私が感じていた主題「ラボラトリー方式はラボを出られるか」。つまり、体験がラボの中特有のこととして処理されてまうと、それは意味がないのではないのかということです。 ラボ自体は日常から離されたラボであることが大切です。日常から切り離されているからこそ、挑戦したりゆっくり考えたり日常でできないことができるのだと思います。それはタスクにおいても同じことが言えると思います。タスクに没入しすぎないことが、多くの気づきにつながるのだと思います。 しかし、ラボでの学びを日常にフィードバックしないと意味がないのだと思います。また、ラボでの学びを日常で実践することに価値があるのだと思います。ラボの中では、プロセスに目をミケられるし働きかけられるけど、日常ではそれが全くできないとなってしまうと、それは意味がなくなってしまうと思います。 私自身は大学自体のラボラトリー方式の学びを積極的に日常に活かしていると思います。 パートナーと対話する時間も意図的に作りますし、Iメッセージで伝えるようにもしています。 しかし、これを卒業生のどれほどの人数ができているのか。 大学時代の授業の時にもっとラボと日常を繋ぐための工夫はできないのか。 そんなことを考えています。\nもし私の後輩がこの記事を読んでいたら、ラボでの学びを日常にどう生かせるのかなんて考えてみてほしいです。 そして、ラボでは積極的に”いつも”じゃない自分を演じてみてほしいです。 そもそも大学自体が巨大なラボです。たくさん挑戦して失敗できる環境はとても貴重です。 ぜひ有効活用してみてください。"
-  },
-  {
     "objectID": "posts/2025-4-19-basic-bata-visualize.html",
     "href": "posts/2025-4-19-basic-bata-visualize.html",
     "title": "基本的なデータの可視化をしてみる",
@@ -215,6 +145,111 @@
     "title": "基本的なデータの可視化をしてみる",
     "section": "最後に",
     "text": "最後に\n図をうまく使うとデータの概要を自ら理解したり、他人に伝えるときもわかりやすいことがあります。全体をパッとみて「こんな分析してみようかな〜」みたいな方針を決めることにも役立ちます。\n今回はRで標準使用できるライブラリを使用してきました。 これでも十分かもしれませんが、R界隈のデファクトスタンダード的な存在として、ggplot2というライブラリがあります。\n使い込んでいくなら、ggplot2もぜひ使ってみてください。 ggplot2については、またいつか書けたらと思います。 参考までにサンプルを置いておきます。 では今日はこの辺で。\n\n# 最初はinstall.packages(\"ggplot2\")を実行してください。何か聞かれるのでYes\nlibrary(ggplot2)\n\nggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +\n  geom_point() +\n  labs(title = \"Sepal Size by Species\",\n       x = \"Sepal Length (cm)\",\n       y = \"Sepal Width (cm)\") +\n  theme_minimal()"
+  },
+  {
+    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html",
+    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html",
+    "title": "ラボラトリー方式はラボを出られるか",
+    "section": "",
+    "text": "私は大学時代にラボラトリー方式の体験学習というものを授業で何度も体験しました。 それ自体は面白い経験でしたし、今でも価値が一定あったと思っています。 しかし、大学を卒業して社会に出てから違和感を感じる部分もありました。 大学自体の友人とラボラトリー方式の体験学習について話す機会があったので、そこで考えたこと・思ったことについてまとめてみました。"
+  },
+  {
+    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習とは何か",
+    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習とは何か",
+    "title": "ラボラトリー方式はラボを出られるか",
+    "section": "ラボラトリー方式の体験学習とは何か",
+    "text": "ラボラトリー方式の体験学習とは何か\n専門的な話は書籍などに任せますが、ラボラトリー方式の体験学習とは、 「特別に設計された人と人とが関わる場 において、参加者自身の行動や関係性を素材にしながら、 そこでの体験を通し て人間関係を学ぶ方法」です(出典)。 教科書などの教材があるわけではなく、特別に設計された人と人が関わる場(ラボ)での行動や感情などを題材に人間関係を学ぶわけです。人間関係といっていますが、自分自身について気づく場でもあります。 この説明だけではあまり分からないと思いますので、もう少し具体的に説明します。 基本的な流れは下記のような感じです。 - グループワーク - 振り返り - 振り返りの共有\nまずは、就活でやるようなグループワークを行います。 グループワーク中はその中でワークと並行して、その中で起こっていることに注目します。 グループワーク後に、そのワーク中に何が起きていたのかを個人で振り返ります。 その後、振り返りの内容をグループで共有します。 グループワークの中で、誰かの言った一言が方向を決めたり、自然と役割分担がでたり、そう言ったグループ内で起きた動きや、誰かの言った発言で自分は発言しづらくなったとか、そう言った個人の中での感情の動きなども気付きになります。\nこのワーク自体は結構面白いと思います。"
+  },
+  {
+    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習のメリット",
+    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式の体験学習のメリット",
+    "title": "ラボラトリー方式はラボを出られるか",
+    "section": "ラボラトリー方式の体験学習のメリット",
+    "text": "ラボラトリー方式の体験学習のメリット\nここからは私が今考えるラボラトリー方式の体験学習の良かった点です。 一般的に言われていることと違っても、これは個人の感じたことなので許してください。\n\n自分に敏感になれる\n最も価値のあった成長は自分に感情に敏感になれたことです。意外と自分の気持ちについて気が付かないものです。 自分がイライラしているのか、悲しいのか、怒っているのか、そう言ったネガティブな感情を弁別するのは難しいことが多いです。それをリアルタイム、もしくは早い段階で検知できると他人との軋轢をある程度カバーすることができます。\n\n\n挑戦的なことができる\nラボラトリー方式のいい部分は、日常から分離された環境であるからそこいつも自分がやらない挑戦的な姿勢を試すことができることです。 ワークの中では、ロールで指定されるものもあり、普段自分がやらないロールを実践することで道の自分を検証することができます。日常生活でやると「あいつキャラが変わった」みたいに思われることもあります。しかし、日常から切り離された環境だからこそ、新しい自分を試すことができます。"
+  },
+  {
+    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#大学の授業での限界",
+    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#大学の授業での限界",
+    "title": "ラボラトリー方式はラボを出られるか",
+    "section": "大学の授業での限界",
+    "text": "大学の授業での限界\n\n譲れないものがない\n私は人間関係の軋轢が生まれるのは、譲れないものがある時が多いのだと思ういます。ワークで何かタスクをこなす場合でも、そのタスクをこなす絶対的な必要性がないのです。仕事などでは売り上げへのコミットや自らの成果・責任などの影響を抱えています。家庭では、お金の使い方や子育てなどの譲れない問題があるでしょう。学生でも部活やクラス対抗の学園祭などがあれば、妥協できない強い気持ちがあるでしょう。 このようにタスク自体の優先度が高い場合、よりリアルな衝突が起きます。 しかし、ラボラトリーの中ではそこまで熱量のある問題を作ることができません。だからこそラボな部分はあると思うのですが。社会人がこのワークをやれば、普段はリスクなどの面から挑戦的な新しい姿勢やタスクに没頭してしまうことで見えない関係性(プロセス)をラボラトリーで見ることができると思います。しかし、学生が授業で集中的にラボラトリーをやっても、日常生活への汎用的な気づきにならないように思います。 学生時代にやったラボでの経験と、社会に出てからの実社会での気づきが別物として認識されてしまうのだと思います。\n\n\n同質集団すぎた\n大学でのラボラトリー方式の体験学習は、その参加者の多様性においてとても大きな問題を抱えていたと思います。年齢、学力、親の所得、育成環境がかなり同質な集団が大学には揃ってしまいます。特に、私のいた大学は9割程度は自宅からの通学生で地域的多様性もありませんでした。実社会に出ると、年齢、その集団での職務時間(職場での先輩後輩)、バックグラウンドの違う人たちと関わっていくことになります。 さらに取引先など利害関係も関わりかなり複雑になっていると思います。そう言ったものによる関係性の複雑さやアプローチの難しさは、大学時代はほとんど感じませんでした。 良くも悪くも”良い子”が集まっていたのだと思います。二日酔いで登場してワーク中に眠ったり、「今日はやる気がない」とサボる人もいませんでした。みんなある程度ワークの意図を理解して協力する前提で、ワークに参加します。前提条件が綺麗すぎるのだと思います。 もし今私が大学に戻るなら、ちょっと辺なことをしたいと思います。 また、年齢や状況が違う人たちとやってみたいとも思います。"
+  },
+  {
+    "objectID": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式はラボを出られるか",
+    "href": "posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html#ラボラトリー方式はラボを出られるか",
+    "title": "ラボラトリー方式はラボを出られるか",
+    "section": "ラボラトリー方式はラボを出られるか",
+    "text": "ラボラトリー方式はラボを出られるか\n私が感じていた主題「ラボラトリー方式はラボを出られるか」。つまり、体験がラボの中特有のこととして処理されてまうと、それは意味がないのではないのかということです。 ラボ自体は日常から離されたラボであることが大切です。日常から切り離されているからこそ、挑戦したりゆっくり考えたり日常でできないことができるのだと思います。それはタスクにおいても同じことが言えると思います。タスクに没入しすぎないことが、多くの気づきにつながるのだと思います。 しかし、ラボでの学びを日常にフィードバックしないと意味がないのだと思います。また、ラボでの学びを日常で実践することに価値があるのだと思います。ラボの中では、プロセスに目をミケられるし働きかけられるけど、日常ではそれが全くできないとなってしまうと、それは意味がなくなってしまうと思います。 私自身は大学自体のラボラトリー方式の学びを積極的に日常に活かしていると思います。 パートナーと対話する時間も意図的に作りますし、Iメッセージで伝えるようにもしています。 しかし、これを卒業生のどれほどの人数ができているのか。 大学時代の授業の時にもっとラボと日常を繋ぐための工夫はできないのか。 そんなことを考えています。\nもし私の後輩がこの記事を読んでいたら、ラボでの学びを日常にどう生かせるのかなんて考えてみてほしいです。 そして、ラボでは積極的に”いつも”じゃない自分を演じてみてほしいです。 そもそも大学自体が巨大なラボです。たくさん挑戦して失敗できる環境はとても貴重です。 ぜひ有効活用してみてください。"
+  },
+  {
+    "objectID": "posts/2025-04-14-r-blog-start.html",
+    "href": "posts/2025-04-14-r-blog-start.html",
+    "title": "Rの再学習、はじめました",
+    "section": "",
+    "text": "およそ8年ぶりにRを使って再学習します。\n大学を卒業して以来、ちょくちょくRに触れるようにしてはいましたが、だんだんと仕事で使う他の言語がメインになっていき、かれこれ8年ほど経ってしました。\n社会人になると「やりたい」と思っていても、なかなか時間を作るのが難しいものです。\nそんな折に、学生時代の友人から「Rの使い方を教えて欲しい」との連絡がありました。 大学院など進学して研究を続けている友人はすごいなと思いました。私も研究の道の興味がなかったわけではなかったので。\nそんなきっかけで久しぶりにRに触れてみることになりました。 目的が明確にあったり、他人が絡んでいると人間不思議と体が動くものです。\n細かい話は忘れてしまっていますが、全体像や分析の方針のことを意外と覚えていたりしました。 大学時代を懐かしく思いながら、昔自分の備忘録的に書いたブログを思い出しました。 他の人に読んでもらう意欲の低すぎるブログで恥ずかしくなったので、せっかくの機会だとRと統計の再学習を兼ねてブログを書くことにしました。\nプログラミング言語としてはRはメジャーではないかもしれませんが、大学で統計などのために学習する人もいるのではないかと思います。 そんな人たちの参考になればいいなと思っています。\n気楽に書いていくので、気楽に読んでください。\nそしてRをきっかけに他のプログラミング言語にも興味を持っていただけると嬉しいです。"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html",
+    "href": "posts/2025-4-17-t-test.html",
+    "title": "t検定",
+    "section": "",
+    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html#今回のお題",
+    "href": "posts/2025-4-17-t-test.html#今回のお題",
+    "title": "t検定",
+    "section": "",
+    "text": "今回はt検定を行なっていきます。 使用する組み込みデータは下記の通りです。\n対応のないt検定(独立2郡の比較) 組み込みデータ；ToothGrowth 概要；サプリメントの種類と用量による歯の成長比較\n対応のあるt検定(同一人物) 組み込みデータ；sleep 概要；薬剤AとBを同一被験者に使った反応の比較"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html#対応のないt検定",
+    "href": "posts/2025-4-17-t-test.html#対応のないt検定",
+    "title": "t検定",
+    "section": "対応のないt検定",
+    "text": "対応のないt検定\nまずは対応のないt検定です。 今回使用するデータの中身を見ていきましょう。\n\nデータの確認\n\ndata(ToothGrowth)\nstr(ToothGrowth)\n\n'data.frame':   60 obs. of  3 variables:\n $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...\n $ supp: Factor w/ 2 levels \"OJ\",\"VC\": 2 2 2 2 2 2 2 2 2 2 ...\n $ dose: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...\n\nsummary(ToothGrowth)\n\n      len        supp         dose      \n Min.   : 4.20   OJ:30   Min.   :0.500  \n 1st Qu.:13.07   VC:30   1st Qu.:0.500  \n Median :19.25           Median :1.000  \n Mean   :18.81           Mean   :1.167  \n 3rd Qu.:25.27           3rd Qu.:2.000  \n Max.   :33.90           Max.   :2.000  \n\n\n３つの項目があり、それぞれ下記のようになっています。\n\nlen : 歯の成長量\nsupp : サプリメントの種類(2種OJ = オレンジジュース, VC = ビタミンC)\ndose : サプリメントの摂取量\n\n早速、t検定をしていきましょう。 t検定の関数は簡単です。\nt.test(“従属変数名” ~ “独立変数名”, data = “データ名”)\n実際にやってみましょう。\n\nt.test(len ~ supp, data = ToothGrowth)\n\n\n    Welch Two Sample t-test\n\ndata:  len by supp\nt = 1.9153, df = 55.309, p-value = 0.06063\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n95 percent confidence interval:\n -0.1710156  7.5710156\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \n\n\n無事結果が出力されたので読んでいきましょう。\nWelch Two Sample t-test\nウェルチの２郡間でのt検定が実施されたことが書かれています。\ndata:  len by supp\n比較対象は len（歯の長さ）,グループ分け変数は supp（OJ vs VC）で分析が行われたことが記載されています。\nt = 1.9153, df = 55.309, p-value = 0.06063\nt -&gt; t値（2群の平均差を標準誤差で割った値） df -&gt; 自由度（Welchの調整による） p-value -&gt; 有意確率：\nalternative hypothesis: true difference in means between group OJ and group VC is not equal to 0\n仮説を書いてくれています。 「対立仮説：OJ群とVC群の平均値の真の差は0に等しくない」by DeepL\n95 percent confidence interval:\n -0.1710156  7.5710156\n95%信頼区間が書かれています。 「2群の平均差は -0.17 〜 +7.57 の範囲にあると考えられる」ということです。\nsample estimates:\nmean in group OJ mean in group VC \n        20.66333         16.96333 \nサンプルの２群のそれぞれの平均値です。\n１つのコマンドでかなり多くのことを実施して出力してくれたことが分かります。 これを手で計算していた時代があると思うと信じられないですね。\n今回は有意確率(p-value)が0.06063 なので5%水準で見ても有意ではありませんでした。"
+  },
+  {
+    "objectID": "posts/2025-4-17-t-test.html#対応のあるt検定",
+    "href": "posts/2025-4-17-t-test.html#対応のあるt検定",
+    "title": "t検定",
+    "section": "対応のあるt検定",
+    "text": "対応のあるt検定\n続いては、Rの組み込みデータ sleep を使って、対応のあるt検定の流れを見ていきます。\n\nデータの確認\nまずは使用するデータの中身を確認しましょう。\n\ndata(sleep)\nstr(sleep)\n\n'data.frame':   20 obs. of  3 variables:\n $ extra: num  0.7 -1.6 -0.2 -1.2 -0.1 3.4 3.7 0.8 0 2 ...\n $ group: Factor w/ 2 levels \"1\",\"2\": 1 1 1 1 1 1 1 1 1 1 ...\n $ ID   : Factor w/ 10 levels \"1\",\"2\",\"3\",\"4\",..: 1 2 3 4 5 6 7 8 9 10 ...\n\nsummary(sleep)\n\n     extra        group        ID   \n Min.   :-1.600   1:10   1      :2  \n 1st Qu.:-0.025   2:10   2      :2  \n Median : 0.950          3      :2  \n Mean   : 1.540          4      :2  \n 3rd Qu.: 3.400          5      :2  \n Max.   : 5.500          6      :2  \n                         (Other):8  \n\nhead(sleep)\n\n  extra group ID\n1   0.7     1  1\n2  -1.6     1  2\n3  -0.2     1  3\n4  -1.2     1  4\n5  -0.1     1  5\n6   3.4     1  6\n\n\nこのデータには以下の3列があります：\n\nextra : 睡眠時間の増加量（数値）\ngroup : 投与された薬剤の種類（1または2）\nID : 被験者ID（同じ被験者が両方の薬剤を試している）\n\nつまり、このデータは同一被験者に2種類の薬を与えた前後比較になっており、対応のあるt検定（paired t-test）が適用できます。\n\n\n\nデータの変換（wide形式へ）\nt.test() で対応のあるt検定をするには、2つのベクトルが必要です。 まずは group によって分けて、同じIDごとに列に並べ直します。\n\nsleep_wide &lt;- reshape(sleep, timevar = \"group\", idvar = \"ID\", direction = \"wide\")\nhead(sleep_wide)\n\n  ID extra.1 extra.2\n1  1     0.7     1.9\n2  2    -1.6     0.8\n3  3    -0.2     1.1\n4  4    -1.2     0.1\n5  5    -0.1    -0.1\n6  6     3.4     4.4\n\n\nこのようにすると extra.1（薬1）と extra.2（薬2）が並んだデータになります。 分析によっては元のデータを加工して、別のデータフレームを作成して分析を行なっていくこよはよくあります。\n\n\n\nt検定の実行\nそれでは対応のあるt検定を実行してみましょう。\n\nt.test(sleep_wide$extra.1, sleep_wide$extra.2, paired = TRUE)\n\n\n    Paired t-test\n\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\nt = -4.0621, df = 9, p-value = 0.002833\nalternative hypothesis: true mean difference is not equal to 0\n95 percent confidence interval:\n -2.4598858 -0.7001142\nsample estimates:\nmean difference \n          -1.58 \n\n\n\n\n\n出力の読み取り\nPaired t-test\n対応のあるt検定（paired t-test）が実行されたことを示しています。\ndata:  sleep_wide$extra.1 and sleep_wide$extra.2\n比較したのは薬1と薬2による睡眠時間の増加量です。\nt = -4.0621, df = 9, p-value = 0.002833\n\nt はt値：2群の平均差を標準誤差で割った値。\ndf は自由度（今回は10人なので df = 9）。\np-value は有意確率：0.05より十分小さいので、有意差ありと判断できます。\n\nalternative hypothesis: true mean difference is not equal to 0\n対立仮説は「2群の平均に差がある（= 差が0でない）」です。\n95 percent confidence interval:\n -2.459885 -0.700115\n薬剤1と薬剤2の平均差は、95%信頼区間で -2.46 〜 -0.70。 0を含まないため、有意差あり。\nsample estimates:\nmean of the differences\n                 -1.58\n薬剤2の方が平均して 1.58 時間分 睡眠時間が長くなる傾向があります。\n\nこちらは有意差が出てよかったです。 私も記事を書きながら分析をしているので、両方とも有意差なしだと悲しいところでした。\n\n\nまとめ\nさて今回は、t検定のやり方と結果の見方を紹介しました。 ここでは書いていませんが、t検定前にやるべきことがありました。 それは別記事で書こうと思うので、t検定をやる際にはそちらもご参照ください。"
+  },
+  {
+    "objectID": "posts/2025-4-24-aov1.html",
+    "href": "posts/2025-4-24-aov1.html",
+    "title": "分散分析 第１回：一元配置分散分析",
+    "section": "",
+    "text": "今回から何回かに分けて分散分析をやっていきます。 分散分析はいろいろなパターンがあったりするんで、順番にやっていこうと思います。 まずは、分散分析にどんなパターンがあるのか、見てみましょう。\n\n表1：分散分析の種類\n\n\n\n\n\n\n\n\n\n\n分析タイプ\n群の構造\n対象の関係性\n例\nRでのモデル式\n\n\n\n\n一元配置分散分析\n1因子×複数水準\n各群は独立\n3つの異なる学校の成績比較\naov(成績 ~ 学校, data = df)\n\n\n二元配置分散分析\n2因子×各水準\n各群は独立\n性別（男女）×教材（3種）\naov(成績 ~ 性別 * 教材, data = df)\n\n\n繰り返し測定分散分析\n1因子×複数水準\n同一対象に複数条件\n同じ人に3つの音楽を聞かせる\naov(反応 ~ 音楽 + Error(被験者/音楽), data = df)\n\n\n\n\n\n表2：各分析での注意点\n\n\n\n\n\n\n\n\n\n\n分析タイプ\n独立性\n因子数\n前提条件\nよく使うデータ例\n\n\n\n\n一元配置分散分析\n独立\n1\n正規性、等分散、独立\nPlantGrowth\n\n\n二元配置分散分析\n独立\n2\n正規性、等分散、独立、交互作用の考慮\nToothGrowth（2因子）\n\n\n繰り返し測定分散分析\n非独立\n1（対応あり）\n正規性、球面性、繰り返し設計\nsleepstudy, ez::ANT\n\n\n\n\n一元配置分散分析では、1つの独立変数（因子）で群を分け、それらの平均値の違いを検定しています。\n二元配置分散分析では、2つの因子を組み合わせ、主効果と交互作用を検定を行っています。\n繰り返し測定分散分析では、同一被験者に複数の条件を適用したときの条件間差を検定（個人差をコントロール）を行っています。\n\n\n早速、一元配置分散分析をやってみましょう。 今回使用するサンプルデータはPlantGrowth です。\n\n\nPlantGrowth は、植物の成長を示す重さ（weight）を、3つの処理群（ctrl, trt1, trt2）で比較した実験データです。\n\n# データを読み込む\ndata(PlantGrowth)\n\n# データの先頭を確認\nhead(PlantGrowth)\n\n  weight group\n1   4.17  ctrl\n2   5.58  ctrl\n3   5.18  ctrl\n4   6.11  ctrl\n5   4.50  ctrl\n6   4.61  ctrl\n\n# グループごとの観測数を確認\ntable(PlantGrowth$group)\n\n\nctrl trt1 trt2 \n  10   10   10 \n\n# サマリーの確認\nsummary(PlantGrowth)\n\n     weight       group   \n Min.   :3.590   ctrl:10  \n 1st Qu.:4.550   trt1:10  \n Median :5.155   trt2:10  \n Mean   :5.073            \n 3rd Qu.:5.530            \n Max.   :6.310            \n\n\n一通りデータの確認ができたので、前提条件となる分析をしていきます。\n\n\n\n\n\n\n各グループが正規分布に従っているかを検定・視覚化で確認します。 以前、t検定をする前に でも使用した、シャピロ・ウィルク検定を行います。\n\n# グループごとにシャピロ・ウィルク検定\nby(PlantGrowth$weight, PlantGrowth$group, shapiro.test)\n\nPlantGrowth$group: ctrl\n\n    Shapiro-Wilk normality test\n\ndata:  dd[x, ]\nW = 0.95668, p-value = 0.7475\n\n------------------------------------------------------------ \nPlantGrowth$group: trt1\n\n    Shapiro-Wilk normality test\n\ndata:  dd[x, ]\nW = 0.93041, p-value = 0.4519\n\n------------------------------------------------------------ \nPlantGrowth$group: trt2\n\n    Shapiro-Wilk normality test\n\ndata:  dd[x, ]\nW = 0.94101, p-value = 0.5643\n\n\n結果の読み方の詳細は　t検定をする前に　を参照してください。 今回は全て正規分布していると判断していいでしょう。\n今回は正規分布を視覚的にも確認できるように、図を作成します。 正規分布を確認するための図としては、Q-Qプロットがあります。\n\n\n\nlibrary(ggplot2)\n\nggplot(PlantGrowth, aes(sample = weight)) +\n  stat_qq() + stat_qq_line() +\n  facet_wrap(~ group) +\n  theme_minimal(base_family = \"Hiragino Sans\") +  # 日本語フォント指定\n  labs(title = \"Q-Qプロットによる正規性の確認\")\n\n\n\n\n\n\n\n\n基本的には、正規分布であればデータ点は直線（対角線）上に並びます。 今回はすでにシャピロ・ウィルク検定をしていて、正規分布であることを確認していますが、視覚的にみるとこんな感じです。\n\n\n\n\n続きまして、各グループの分散が等しいことを確認します。 ここではバートレット検定を使用します。\n\nbartlett.test(weight ~ group, data = PlantGrowth)\n\n\n    Bartlett test of homogeneity of variances\n\ndata:  weight by group\nBartlett's K-squared = 2.8786, df = 2, p-value = 0.2371\n\n\nさて、結果を読んでいきましょう。\nBartlett test of homogeneity of variances\n等分散性の検定（Bartlett’s test）」を実行したという見出しです。\ndata:  weight by group\n検定に使われたデータの形式を示しています。\n\nweight：目的変数（数値データ）\ngroup：グループ（カテゴリ変数）\n\nBartlett's K-squared = 2.8786, df = 2, p-value = 0.2371\n\nK-squared : Bartlett検定で使われる統計量（大きいほど分散に差がある）\ndf : 自由度（groupの数 - 1）\np-value : 有意確率（等分散であるという仮説が棄却されるかどうかの基準）\n\np値が0.05より大きい（ここでは0.2371）ので、「分散は等しい」という帰無仮説を棄却できないので、”等分散性あり”と判断できます。\n\n\n\n\n正規性も等分散性も問題ないことが確認できたので、実際に分散分析に移っていきましょう。\n\n# 一元配置分散分析\naov_result &lt;- aov(weight ~ group, data = PlantGrowth)\n\n# 結果の表示\nsummary(aov_result)\n\n            Df Sum Sq Mean Sq F value Pr(&gt;F)  \ngroup        2  3.766  1.8832   4.846 0.0159 *\nResiduals   27 10.492  0.3886                 \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\nこの結果の読み方を見てみましょう。\n\n表3：分散分析の結果の見方\n\n\n\n項目\n意味\n\n\n\n\nDf\n自由度（Degrees of Freedom）\n\n\nSum Sq\n平方和（Sum of Squares）\n\n\nMean Sq\n平均平方（Sum Sq ÷ Df）\n\n\nF value\nF統計量（群間の変動 ÷ 群内の変動）\n\n\nPr(&gt;F)\np値（有意確率）\n\n\n\n\n解説：\ngroup：要因（今回は3群：ctrl, trt1, trt2）\nDf = 2：グループ数 - 1（3 - 1 = 2）\nSum Sq = 3.766：グループ間の平方和（群間のばらつき）\nMean Sq = 1.8832：群間の平方平均（3.766 ÷ 2）\nF value = 4.846：群間の変動が群内の変動より約4.8倍大きいことを示す\nPr(&gt;F) = 0.0159：p値（5%より小さい → 有意）\n*：p値が0.05未満 → 有意な差あり\nこの結果から、「3群のうち、少なくとも1つの平均に有意な差がある」と判断できます（p = 0.0159）。\n\n\n分散分析の結果が出ましたが、ついでに分散分析っぽい感じの図も作成しましょう。 まずは、データの分布を見るために箱ひげ図を作成します。\n\nlibrary(ggplot2)\n\nggplot(PlantGrowth, aes(x = group, y = weight, fill = group)) +\n  geom_boxplot() +\n  theme_minimal(base_family = \"Hiragino Sans\") +  # 日本語フォント指定\n  labs(title = \"各群の重さの分布（箱ひげ図）\",\n       x = \"処理群\", y = \"植物の重さ\")\n\n\n\n\n\n\n\n\nついでに、平均＋標準誤差の棒グラフも作成しましょう。\n\nggplot(PlantGrowth, aes(x = group, y = weight, fill = group)) +\n  stat_summary(fun = mean, geom = \"bar\", width = 0.6) +\n  stat_summary(fun.data = mean_se, geom = \"errorbar\", width = 0.2) +\n  theme_minimal(base_family = \"Hiragino Sans\") +  # 日本語フォント指定\n  labs(title = \"各群の平均と標準誤差\",\n       x = \"処理群\", y = \"植物の重さ\")\n\n\n\n\n\n\n\n\n何となくどこに差がありそうか見えてきましたね。\n\n\n\n\n先ほどの分散分析で「3群のうち、少なくとも1つの平均に有意な差がある」ということが分かりました。 次に確認するべきは、「どのグループとどのグループに差があるか」です。 これが多重比較ってやつです。\n多重比較の方法はいろいろありますが、ここでは３群以上の比較でよく使用されるTukeyHSDをやってみます。\n\n# ANOVAの結果オブジェクト\nmodel &lt;- aov(weight ~ group, data = PlantGrowth)\n\n# 多重比較（Tukey HSD）\nTukeyHSD(model)\n\n  Tukey multiple comparisons of means\n    95% family-wise confidence level\n\nFit: aov(formula = weight ~ group, data = PlantGrowth)\n\n$group\n            diff        lwr       upr     p adj\ntrt1-ctrl -0.371 -1.0622161 0.3202161 0.3908711\ntrt2-ctrl  0.494 -0.1972161 1.1852161 0.1979960\ntrt2-trt1  0.865  0.1737839 1.5562161 0.0120064\n\n\nTukeyHSD() 関数の出力結果を一行ずつ見ていきましょう。\nTukey multiple comparisons of means\n95% family-wise confidence level\n解説：\n\n「TukeyのHSD検定」を使って、各グループの平均の差を検定しています。\nfamily-wise confidence level = 95% とは、「すべてのペアの比較に対して、誤検出のリスク（第1種の誤り）を全体で5%以内に保つようにした」信頼区間を意味します。\n\nFit: aov(formula = weight ~ group, data = PlantGrowth)\n解説：\n\n分散分析に使われたモデルを再確認しています。\nweight ~ group：植物の重さを、group（処理群）によって説明するモデル。\n\ntrt1-ctrl -0.371 -1.0622161 0.3202161 0.3908711\n解説：\n\n\n\n項目\n値\n意味\n\n\n\n\n比較\ntrt1 - ctrl\ntrt1群とctrl群の差\n\n\ndiff\n-0.371\n平均値の差（trt1の方がやや小さい）\n\n\nlwr\n-1.062\n信頼区間の下限（差の下限95%）\n\n\nupr\n0.320\n信頼区間の上限（差の上限95%）\n\n\np adj\n0.391\n補正済みp値（有意ではない）\n\n\n\n解釈：trt1とctrlの間には有意な差は見られない（p &gt; 0.05、信頼区間に0が含まれている）。\ntrt2-ctrl  0.494 -0.1972161 1.1852161 0.1979960\n解説：\n\n平均値の差は +0.494 → trt2の方が重い。\nただし信頼区間（-0.197 ～ 1.185）に0が含まれており、p = 0.198 &gt; 0.05。\n\n解釈：trt2とctrlの間も有意な差はなし。\ntrt2-trt1  0.865  0.1737839 1.5562161 0.0120064\n解説：\n\n平均差は 0.865 → trt2の方がtrt1より有意に重い。\n信頼区間（0.174 ～ 1.556）には0を含まない。\np値 = 0.012 → 有意水準0.05未満。\n\n解釈：trt2 と trt1 の間には 統計的に有意な差がある。\nTukeyの多重比較の結果、次のようなことが分かりました。\n\ntrt1とctrl、trt2とctrlの間には統計的に有意な差は見られませんでした（p &gt; 0.05、信頼区間に0を含む）。\n一方で、trt2とtrt1の間には有意な差がありました（p = 0.012）。\n→ trt2群の植物は、trt1群よりも有意に重い\n\nこの結果を図にしてみましょう。\n\n\n\n# モデル作成\nmodel &lt;- aov(weight ~ group, data = PlantGrowth)\n\n# 多重比較（Tukey）\ntukey_result &lt;- TukeyHSD(model)\n\n# プロット（標準の可視化）\nplot(tukey_result, las = 1, col = \"blue\")\n\n\n\n\n\n\n\n\nggplot2でもっと見やすくしましょう。\n\n# 1. モデル作成とTukeyHSD\nmodel &lt;- aov(weight ~ group, data = PlantGrowth)\ntukey &lt;- TukeyHSD(model)\n\n# 2. データフレーム化（グループ情報も列にする）\ntukey_df &lt;- as.data.frame(tukey$group)\ntukey_df$comparison &lt;- rownames(tukey$group)\n\n# 3. 可視化\nlibrary(ggplot2)\n\nggplot(tukey_df, aes(x = comparison, y = diff)) +\n  geom_point(size = 3, color = \"steelblue\") +\n  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2, color = \"steelblue\") +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"gray50\") +\n  coord_flip() +\n  labs(title = \"Tukey HSDの多重比較結果（平均差と信頼区間）\",\n       x = \"比較グループ\", y = \"平均差\") +\n  theme_minimal(base_family = \"Hiragino Sans\")  # 日本語フォント指定\n\n\n\n\n\n\n\n\n今回の分析結果を可視化できたので、結構分かりやすいのではないかなと思います。 次回は、二元配置分散分析をやってみたいと思います。"
+  },
+  {
+    "objectID": "posts/2025-4-24-aov1.html#一元配置分散分析",
+    "href": "posts/2025-4-24-aov1.html#一元配置分散分析",
+    "title": "分散分析 第１回：一元配置分散分析",
+    "section": "",
+    "text": "早速、一元配置分散分析をやってみましょう。 今回使用するサンプルデータはPlantGrowth です。\n\n\nPlantGrowth は、植物の成長を示す重さ（weight）を、3つの処理群（ctrl, trt1, trt2）で比較した実験データです。\n\n# データを読み込む\ndata(PlantGrowth)\n\n# データの先頭を確認\nhead(PlantGrowth)\n\n  weight group\n1   4.17  ctrl\n2   5.58  ctrl\n3   5.18  ctrl\n4   6.11  ctrl\n5   4.50  ctrl\n6   4.61  ctrl\n\n# グループごとの観測数を確認\ntable(PlantGrowth$group)\n\n\nctrl trt1 trt2 \n  10   10   10 \n\n# サマリーの確認\nsummary(PlantGrowth)\n\n     weight       group   \n Min.   :3.590   ctrl:10  \n 1st Qu.:4.550   trt1:10  \n Median :5.155   trt2:10  \n Mean   :5.073            \n 3rd Qu.:5.530            \n Max.   :6.310            \n\n\n一通りデータの確認ができたので、前提条件となる分析をしていきます。"
+  },
+  {
+    "objectID": "posts/2025-4-24-aov1.html#分散分析の前提条件チェック",
+    "href": "posts/2025-4-24-aov1.html#分散分析の前提条件チェック",
+    "title": "分散分析 第１回：一元配置分散分析",
+    "section": "",
+    "text": "各グループが正規分布に従っているかを検定・視覚化で確認します。 以前、t検定をする前に でも使用した、シャピロ・ウィルク検定を行います。\n\n# グループごとにシャピロ・ウィルク検定\nby(PlantGrowth$weight, PlantGrowth$group, shapiro.test)\n\nPlantGrowth$group: ctrl\n\n    Shapiro-Wilk normality test\n\ndata:  dd[x, ]\nW = 0.95668, p-value = 0.7475\n\n------------------------------------------------------------ \nPlantGrowth$group: trt1\n\n    Shapiro-Wilk normality test\n\ndata:  dd[x, ]\nW = 0.93041, p-value = 0.4519\n\n------------------------------------------------------------ \nPlantGrowth$group: trt2\n\n    Shapiro-Wilk normality test\n\ndata:  dd[x, ]\nW = 0.94101, p-value = 0.5643\n\n\n結果の読み方の詳細は　t検定をする前に　を参照してください。 今回は全て正規分布していると判断していいでしょう。\n今回は正規分布を視覚的にも確認できるように、図を作成します。 正規分布を確認するための図としては、Q-Qプロットがあります。\n\n\n\nlibrary(ggplot2)\n\nggplot(PlantGrowth, aes(sample = weight)) +\n  stat_qq() + stat_qq_line() +\n  facet_wrap(~ group) +\n  theme_minimal(base_family = \"Hiragino Sans\") +  # 日本語フォント指定\n  labs(title = \"Q-Qプロットによる正規性の確認\")\n\n\n\n\n\n\n\n\n基本的には、正規分布であればデータ点は直線（対角線）上に並びます。 今回はすでにシャピロ・ウィルク検定をしていて、正規分布であることを確認していますが、視覚的にみるとこんな感じです。\n\n\n\n\n続きまして、各グループの分散が等しいことを確認します。 ここではバートレット検定を使用します。\n\nbartlett.test(weight ~ group, data = PlantGrowth)\n\n\n    Bartlett test of homogeneity of variances\n\ndata:  weight by group\nBartlett's K-squared = 2.8786, df = 2, p-value = 0.2371\n\n\nさて、結果を読んでいきましょう。\nBartlett test of homogeneity of variances\n等分散性の検定（Bartlett’s test）」を実行したという見出しです。\ndata:  weight by group\n検定に使われたデータの形式を示しています。\n\nweight：目的変数（数値データ）\ngroup：グループ（カテゴリ変数）\n\nBartlett's K-squared = 2.8786, df = 2, p-value = 0.2371\n\nK-squared : Bartlett検定で使われる統計量（大きいほど分散に差がある）\ndf : 自由度（groupの数 - 1）\np-value : 有意確率（等分散であるという仮説が棄却されるかどうかの基準）\n\np値が0.05より大きい（ここでは0.2371）ので、「分散は等しい」という帰無仮説を棄却できないので、”等分散性あり”と判断できます。"
+  },
+  {
+    "objectID": "posts/2025-4-24-aov1.html#分散分析-1",
+    "href": "posts/2025-4-24-aov1.html#分散分析-1",
+    "title": "分散分析 第１回：一元配置分散分析",
+    "section": "",
+    "text": "正規性も等分散性も問題ないことが確認できたので、実際に分散分析に移っていきましょう。\n\n# 一元配置分散分析\naov_result &lt;- aov(weight ~ group, data = PlantGrowth)\n\n# 結果の表示\nsummary(aov_result)\n\n            Df Sum Sq Mean Sq F value Pr(&gt;F)  \ngroup        2  3.766  1.8832   4.846 0.0159 *\nResiduals   27 10.492  0.3886                 \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\nこの結果の読み方を見てみましょう。\n\n表3：分散分析の結果の見方\n\n\n\n項目\n意味\n\n\n\n\nDf\n自由度（Degrees of Freedom）\n\n\nSum Sq\n平方和（Sum of Squares）\n\n\nMean Sq\n平均平方（Sum Sq ÷ Df）\n\n\nF value\nF統計量（群間の変動 ÷ 群内の変動）\n\n\nPr(&gt;F)\np値（有意確率）\n\n\n\n\n解説：\ngroup：要因（今回は3群：ctrl, trt1, trt2）\nDf = 2：グループ数 - 1（3 - 1 = 2）\nSum Sq = 3.766：グループ間の平方和（群間のばらつき）\nMean Sq = 1.8832：群間の平方平均（3.766 ÷ 2）\nF value = 4.846：群間の変動が群内の変動より約4.8倍大きいことを示す\nPr(&gt;F) = 0.0159：p値（5%より小さい → 有意）\n*：p値が0.05未満 → 有意な差あり\nこの結果から、「3群のうち、少なくとも1つの平均に有意な差がある」と判断できます（p = 0.0159）。\n\n\n分散分析の結果が出ましたが、ついでに分散分析っぽい感じの図も作成しましょう。 まずは、データの分布を見るために箱ひげ図を作成します。\n\nlibrary(ggplot2)\n\nggplot(PlantGrowth, aes(x = group, y = weight, fill = group)) +\n  geom_boxplot() +\n  theme_minimal(base_family = \"Hiragino Sans\") +  # 日本語フォント指定\n  labs(title = \"各群の重さの分布（箱ひげ図）\",\n       x = \"処理群\", y = \"植物の重さ\")\n\n\n\n\n\n\n\n\nついでに、平均＋標準誤差の棒グラフも作成しましょう。\n\nggplot(PlantGrowth, aes(x = group, y = weight, fill = group)) +\n  stat_summary(fun = mean, geom = \"bar\", width = 0.6) +\n  stat_summary(fun.data = mean_se, geom = \"errorbar\", width = 0.2) +\n  theme_minimal(base_family = \"Hiragino Sans\") +  # 日本語フォント指定\n  labs(title = \"各群の平均と標準誤差\",\n       x = \"処理群\", y = \"植物の重さ\")\n\n\n\n\n\n\n\n\n何となくどこに差がありそうか見えてきましたね。"
+  },
+  {
+    "objectID": "posts/2025-4-24-aov1.html#多重比較",
+    "href": "posts/2025-4-24-aov1.html#多重比較",
+    "title": "分散分析 第１回：一元配置分散分析",
+    "section": "",
+    "text": "先ほどの分散分析で「3群のうち、少なくとも1つの平均に有意な差がある」ということが分かりました。 次に確認するべきは、「どのグループとどのグループに差があるか」です。 これが多重比較ってやつです。\n多重比較の方法はいろいろありますが、ここでは３群以上の比較でよく使用されるTukeyHSDをやってみます。\n\n# ANOVAの結果オブジェクト\nmodel &lt;- aov(weight ~ group, data = PlantGrowth)\n\n# 多重比較（Tukey HSD）\nTukeyHSD(model)\n\n  Tukey multiple comparisons of means\n    95% family-wise confidence level\n\nFit: aov(formula = weight ~ group, data = PlantGrowth)\n\n$group\n            diff        lwr       upr     p adj\ntrt1-ctrl -0.371 -1.0622161 0.3202161 0.3908711\ntrt2-ctrl  0.494 -0.1972161 1.1852161 0.1979960\ntrt2-trt1  0.865  0.1737839 1.5562161 0.0120064\n\n\nTukeyHSD() 関数の出力結果を一行ずつ見ていきましょう。\nTukey multiple comparisons of means\n95% family-wise confidence level\n解説：\n\n「TukeyのHSD検定」を使って、各グループの平均の差を検定しています。\nfamily-wise confidence level = 95% とは、「すべてのペアの比較に対して、誤検出のリスク（第1種の誤り）を全体で5%以内に保つようにした」信頼区間を意味します。\n\nFit: aov(formula = weight ~ group, data = PlantGrowth)\n解説：\n\n分散分析に使われたモデルを再確認しています。\nweight ~ group：植物の重さを、group（処理群）によって説明するモデル。\n\ntrt1-ctrl -0.371 -1.0622161 0.3202161 0.3908711\n解説：\n\n\n\n項目\n値\n意味\n\n\n\n\n比較\ntrt1 - ctrl\ntrt1群とctrl群の差\n\n\ndiff\n-0.371\n平均値の差（trt1の方がやや小さい）\n\n\nlwr\n-1.062\n信頼区間の下限（差の下限95%）\n\n\nupr\n0.320\n信頼区間の上限（差の上限95%）\n\n\np adj\n0.391\n補正済みp値（有意ではない）\n\n\n\n解釈：trt1とctrlの間には有意な差は見られない（p &gt; 0.05、信頼区間に0が含まれている）。\ntrt2-ctrl  0.494 -0.1972161 1.1852161 0.1979960\n解説：\n\n平均値の差は +0.494 → trt2の方が重い。\nただし信頼区間（-0.197 ～ 1.185）に0が含まれており、p = 0.198 &gt; 0.05。\n\n解釈：trt2とctrlの間も有意な差はなし。\ntrt2-trt1  0.865  0.1737839 1.5562161 0.0120064\n解説：\n\n平均差は 0.865 → trt2の方がtrt1より有意に重い。\n信頼区間（0.174 ～ 1.556）には0を含まない。\np値 = 0.012 → 有意水準0.05未満。\n\n解釈：trt2 と trt1 の間には 統計的に有意な差がある。\nTukeyの多重比較の結果、次のようなことが分かりました。\n\ntrt1とctrl、trt2とctrlの間には統計的に有意な差は見られませんでした（p &gt; 0.05、信頼区間に0を含む）。\n一方で、trt2とtrt1の間には有意な差がありました（p = 0.012）。\n→ trt2群の植物は、trt1群よりも有意に重い\n\nこの結果を図にしてみましょう。\n\n\n\n# モデル作成\nmodel &lt;- aov(weight ~ group, data = PlantGrowth)\n\n# 多重比較（Tukey）\ntukey_result &lt;- TukeyHSD(model)\n\n# プロット（標準の可視化）\nplot(tukey_result, las = 1, col = \"blue\")\n\n\n\n\n\n\n\n\nggplot2でもっと見やすくしましょう。\n\n# 1. モデル作成とTukeyHSD\nmodel &lt;- aov(weight ~ group, data = PlantGrowth)\ntukey &lt;- TukeyHSD(model)\n\n# 2. データフレーム化（グループ情報も列にする）\ntukey_df &lt;- as.data.frame(tukey$group)\ntukey_df$comparison &lt;- rownames(tukey$group)\n\n# 3. 可視化\nlibrary(ggplot2)\n\nggplot(tukey_df, aes(x = comparison, y = diff)) +\n  geom_point(size = 3, color = \"steelblue\") +\n  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2, color = \"steelblue\") +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"gray50\") +\n  coord_flip() +\n  labs(title = \"Tukey HSDの多重比較結果（平均差と信頼区間）\",\n       x = \"比較グループ\", y = \"平均差\") +\n  theme_minimal(base_family = \"Hiragino Sans\")  # 日本語フォント指定\n\n\n\n\n\n\n\n\n今回の分析結果を可視化できたので、結構分かりやすいのではないかなと思います。 次回は、二元配置分散分析をやってみたいと思います。"
   },
   {
     "objectID": "posts/2025-04-14-r-blog-with-r.html",
@@ -305,13 +340,13 @@
     "href": "R.html",
     "title": "R",
     "section": "",
-    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定"
+    "text": "Rに関する記事をジャンル分けしてまとめたものです。\n\n\n\nRの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定\n分散分析 - 導入と独立一元配列"
   },
   {
     "objectID": "R.html#r入門",
     "href": "R.html#r入門",
     "title": "R",
     "section": "",
-    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定"
+    "text": "Rの組み込みデータ\n基礎統計量と欠損値の確認\n基本的なデータの可視化をしてみる\nt検定をする前に\nt検定\n分散分析 - 導入と独立一元配列"
   }
 ]
