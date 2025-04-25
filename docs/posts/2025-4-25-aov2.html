@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ThePastOfDice">
+<meta name="dcterms.date" content="2025-04-25">
+
+<title>分散分析 第2回：二元配置分散分析 – relearning-stats</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c44ea0d3856dd046b875089f7fe24e46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-20252fd49cbe0430650c563cf82ea673.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">relearning-stats</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../posts.html"> 
+<span class="menu-text">記事一覧</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../column.html"> 
+<span class="menu-text">コラム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../R.html"> 
+<span class="menu-text">R</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">分散分析 第2回：二元配置分散分析</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ThePastOfDice </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 25, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="二元配置分散分析" class="level1">
+<h1>二元配置分散分析</h1>
+<p>今回は二元配置の分散分析をやっていきます。 「そもそも二元配置ってなによ」ってことから見ていきましょうか。</p>
+<p>早速今回使用するデータを確認します。</p>
+<section id="サンプルデータ" class="level2">
+<h2 class="anchored" data-anchor-id="サンプルデータ">サンプルデータ</h2>
+<p>今回使用するデータは<code>ToothGrowth</code>です。 何度かこのブログでは紹介していますが、念の為データを確認していきましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">data</span>(ToothGrowth)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">summary</span>(ToothGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      len        supp         dose      
+ Min.   : 4.20   OJ:30   Min.   :0.500  
+ 1st Qu.:13.07   VC:30   1st Qu.:0.500  
+ Median :19.25           Median :1.000  
+ Mean   :18.81           Mean   :1.167  
+ 3rd Qu.:25.27           3rd Qu.:2.000  
+ Max.   :33.90           Max.   :2.000  </code></pre>
+</div>
+</div>
+<ul>
+<li><code>len</code> : 歯の伸びた長さ(数値)</li>
+<li><code>supp</code> : 接種したサプリの種類(ラベル)</li>
+<li><code>dose</code> : 投与量(数値)</li>
+</ul>
+</section>
+<section id="分析計画" class="level2">
+<h2 class="anchored" data-anchor-id="分析計画">分析計画</h2>
+<p>このデータを分散分析をしていきます。 独立変数は、<code>supp</code> と <code>dose</code> で 充足変数が、<code>len</code>です。</p>
+<p>二元配置分散分析では、主効果と交互作用があります。</p>
+<section id="主効果とは" class="level4">
+<h4 class="anchored" data-anchor-id="主効果とは">主効果とは？</h4>
+<p><strong>主効果（Main effect）</strong>とは、ある1つの独立変数が目的変数（従属変数）に与える影響のことを指します。</p>
+<p>この分析では、2つの主効果を検定します：</p>
+<ul>
+<li><code>supp</code>（サプリの種類）が <strong>歯の伸び（len）に与える効果</strong></li>
+<li><code>dose</code>（投与量）が <strong>歯の伸びに与える効果</strong></li>
+</ul>
+<p>それぞれが <strong>他の因子に関係なく</strong>、単独で平均値に差をもたらしているかどうかを確認します。</p>
+</section>
+<section id="交互作用とは" class="level4">
+<h4 class="anchored" data-anchor-id="交互作用とは">交互作用とは？</h4>
+<p><strong>交互作用（Interaction effect）</strong>とは、<strong>2つの独立変数が組み合わさったときに発生する相乗的な影響</strong>のことです。</p>
+<p>たとえば：</p>
+<ul>
+<li><code>supp</code> の効果が <strong>投与量（dose）の値によって変わる</strong></li>
+<li>または <code>dose</code> の効果が <strong>サプリの種類（supp）によって変わる</strong></li>
+</ul>
+<p>このように、一方の因子の効果が、もう一方の因子の水準によって変化するとき、<strong>交互作用がある</strong>といいます。</p>
+<p>交互作用が有意であれば、「主効果だけを見る」だけでは不十分で、<strong>2つの因子の組み合わせ</strong>で結果が変わってくることを意味します。</p>
+</section>
+<section id="なぜ主効果と交互作用を分けて考えるのか" class="level4">
+<h4 class="anchored" data-anchor-id="なぜ主効果と交互作用を分けて考えるのか">なぜ主効果と交互作用を分けて考えるのか？</h4>
+<p>分散分析では、以下の3つを個別に評価します：</p>
+<ol type="1">
+<li><code>supp</code> の主効果</li>
+<li><code>dose</code> の主効果</li>
+<li><code>supp × dose</code> の交互作用</li>
+</ol>
+<p>この3つを分けて見ることで、「それぞれの因子がどのように効いているか」「組み合わせが重要なのか」が明確になります。</p>
+</section>
+</section>
+<section id="分析" class="level2">
+<h2 class="anchored" data-anchor-id="分析">分析</h2>
+<p>実際に分析を進めていきましょう。</p>
+<section id="前処理" class="level3">
+<h3 class="anchored" data-anchor-id="前処理">前処理</h3>
+<p>二元配置の分散分析ができるように、<code>dose</code>をカテゴリに変更してみましょう。 数値データをカテゴリに変更する　方法はいろいろあると思います。 等間隔で切ったり、四分位を使ったりなどです。 今回の<code>ToothGrowth</code> は実はデータが3つしかありません。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">unique</span>(ToothGrowth<span class="sc">$</span>dose) <span class="co"># ユニークな値のみを取り出す。</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5 1.0 2.0</code></pre>
+</div>
+</div>
+<p>なので、数値データをカテゴリデータに変更します。 下記コードでRの中での<code>dose</code> の認識を数値からカテゴリに変更できます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>ToothGrowth<span class="sc">$</span>dose <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ToothGrowth<span class="sc">$</span>dose)  <span class="co"># doseをカテゴリとして扱う</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">summary</span>(ToothGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      len        supp     dose   
+ Min.   : 4.20   OJ:30   0.5:20  
+ 1st Qu.:13.07   VC:30   1  :20  
+ Median :19.25           2  :20  
+ Mean   :18.81                   
+ 3rd Qu.:25.27                   
+ Max.   :33.90                   </code></pre>
+</div>
+</div>
+<p>数値からカテゴリに変更したので、summaryの表示で平均値などではなく各カテゴリでの個数が表示されるようになっています。</p>
+</section>
+<section id="正規性と等分散性の確認" class="level3">
+<h3 class="anchored" data-anchor-id="正規性と等分散性の確認">正規性と等分散性の確認</h3>
+<p>今回は二元配置分散分析の練習なので、正規性と等分散性の検定はサクッとです。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: パッケージ 'dplyr' はバージョン 4.2.3 の R の下で造られました</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+ 次のパッケージを付け加えます: 'dplyr' </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code> 以下のオブジェクトは 'package:stats' からマスクされています:
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code> 以下のオブジェクトは 'package:base' からマスクされています:
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>ToothGrowth <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">group_by</span>(supp, dose) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">summarise</span>(<span class="at">p_value =</span> <span class="fu">shapiro.test</span>(len)<span class="sc">$</span>p.value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'supp'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+# Groups:   supp [2]
+  supp  dose  p_value
+  &lt;fct&gt; &lt;fct&gt;   &lt;dbl&gt;
+1 OJ    0.5     0.182
+2 OJ    1       0.415
+3 OJ    2       0.815
+4 VC    0.5     0.170
+5 VC    1       0.270
+6 VC    2       0.919</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>ToothGrowth<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">interaction</span>(ToothGrowth<span class="sc">$</span>supp, ToothGrowth<span class="sc">$</span>dose)</span>
+<span id="cb15-2"><a href="#cb15-2"></a></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">bartlett.test</span>(len <span class="sc">~</span> group, <span class="at">data =</span> ToothGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Bartlett test of homogeneity of variances
+
+data:  len by group
+Bartlett's K-squared = 6.9273, df = 5, p-value = 0.2261</code></pre>
+</div>
+</div>
+<p>正規性も等分散性も問題がなさそうです。</p>
+</section>
+<section id="二元配置分散分析-1" class="level3">
+<h3 class="anchored" data-anchor-id="二元配置分散分析-1">二元配置分散分析</h3>
+<p>データの整形が完了したので、実際の分析に移ってみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># 分散分析モデルの作成（主効果 + 交互作用）</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>model <span class="ot">&lt;-</span> <span class="fu">aov</span>(len <span class="sc">~</span> supp <span class="sc">*</span> dose, <span class="at">data =</span> ToothGrowth)</span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="co"># 結果の表示</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+supp         1  205.4   205.4  15.572 0.000231 ***
+dose         2 2426.4  1213.2  92.000  &lt; 2e-16 ***
+supp:dose    2  108.3    54.2   4.107 0.021860 *  
+Residuals   54  712.1    13.2                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>無事結果が表示されたので、出力結果を読み解いていきましょう。</p>
+<pre><code>Df Sum Sq Mean Sq F value   Pr(&gt;F)</code></pre>
+<ul>
+<li><code>Df</code> : 自由度（Degrees of Freedom）</li>
+<li><code>Sum Sq</code> : 平方和（Sum of Squares）</li>
+<li><code>Mean Sq</code> : 平均平方（Sum Sq ÷ Df）</li>
+<li><code>F value</code> : F統計量（群間の変動 ÷ 群内の変動）</li>
+<li><code>Pr(&gt;F)</code> : p値（有意確率）</li>
+</ul>
+<pre><code>supp               1  205.4   205.4  15.572  0.000231 ***</code></pre>
+<ul>
+<li><code>supp</code> : サプリの種類（VC or OJ）による主効果の検定をしていることを示しています。</li>
+<li><code>Df = 1</code> : サプリは2水準（VCとOJ）なので自由度は1です。</li>
+<li><code>Sum Sq = 205.4</code> : サプリによるばらつきの平方和</li>
+<li><code>Mean Sq = 205.4</code> : 自由度1なので平方平均も同じ</li>
+<li><code>F value = 15.572</code> : 群間変動（サプリの効果）が群内変動に比べて約15.6倍大きい</li>
+<li><code>Pr(&gt;F) = 0.000231</code> : p &lt; 0.001なので非常に有意（***）</li>
+</ul>
+<pre><code>dose               2 2426.4  1213.2  92.000  &lt; 2e-16 ***</code></pre>
+<ul>
+<li><code>dose</code> : 投与量（0.5, 1, 2）による主効果の検定</li>
+<li><code>Df = 2</code> : 3水準 → 自由度2</li>
+<li><code>Sum Sq = 2426.4</code> : 投与量によるばらつきの平方和</li>
+<li><code>Mean Sq = 1213.2</code> : 2426.4 ÷ 2</li>
+<li><code>F value = 92.000</code> : 群間変動が群内変動に比べて92倍も大きい</li>
+<li><code>Pr(&gt;F) &lt; 2e-16</code> : 極めて小さいp値（***）</li>
+</ul>
+<pre><code>supp:dose          2  108.3    54.2   4.108  0.021860 *</code></pre>
+<ul>
+<li><code>supp:dose</code> : サプリと投与量の交互作用効果の検定</li>
+<li><code>Df = 2</code> : 組み合わせの自由度2</li>
+<li><code>Sum Sq = 108.3</code> : 交互作用によるばらつきの平方和</li>
+<li><code>Mean Sq = 54.2</code> : 108.3 ÷ 2</li>
+<li><code>F value = 4.108</code> : 交互作用効果の大きさ（群間 vs 群内変動比）</li>
+<li><code>Pr(&gt;F) = 0.021860</code> : p &lt; 0.05なので有意（*）</li>
+</ul>
+<pre><code>Residuals         54  712.1    13.2</code></pre>
+<ul>
+<li><code>Residuals</code> : 誤差（説明できなかったばらつき）</li>
+<li><code>Df = 54</code> : 総サンプル数（60）− 各効果の自由度合計（1+2+2）</li>
+<li><code>Sum Sq = 712.1</code> : 誤差平方和</li>
+<li><code>Mean Sq = 13.2</code> : 誤差平方平均</li>
+</ul>
+</section>
+<section id="この結果をまとめると" class="level3">
+<h3 class="anchored" data-anchor-id="この結果をまとめると">この結果をまとめると</h3>
+<ul>
+<li><code>supp</code>に有意に効果あり → サプリの種類の主効果</li>
+<li><code>dose</code>に有意に効果あり → 投与量の主効果</li>
+<li><code>supp&amp;dose</code>に有意に効果あり → 交互作用</li>
+</ul>
+<p><strong><em>サプリの種類（supp）、投与量（dose）ともに歯の伸びに有意な影響を与えることが分かりました。</em></strong></p>
+<p><strong><em>また、サプリと投与量の間にも有意な交互作用が見られたため、単純な主効果だけでなく、「どのサプリをどの投与量で使用するか」という組み合わせによって結果が変わることが示唆されました。</em></strong></p>
+</section>
+</section>
+<section id="多重比較" class="level2">
+<h2 class="anchored" data-anchor-id="多重比較">多重比較</h2>
+<p>分散分析で有意差がありましたので、多重比較を行いましょう。 多重比較は、一元配置分散分析でも使用した TukeyのHSD検定 です。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># 分散分析モデル（すでに作成済みのためコメントアウト）</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="co"># model &lt;- aov(len ~ supp * dose, data = ToothGrowth)</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="co"># TukeyHSDによる多重比較</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a>tukey_result <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(model)</span>
+<span id="cb24-6"><a href="#cb24-6"></a></span>
+<span id="cb24-7"><a href="#cb24-7"></a><span class="co"># 結果の表示</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a>tukey_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = len ~ supp * dose, data = ToothGrowth)
+
+$supp
+      diff       lwr       upr     p adj
+VC-OJ -3.7 -5.579828 -1.820172 0.0002312
+
+$dose
+        diff       lwr       upr   p adj
+1-0.5  9.130  6.362488 11.897512 0.0e+00
+2-0.5 15.495 12.727488 18.262512 0.0e+00
+2-1    6.365  3.597488  9.132512 2.7e-06
+
+$`supp:dose`
+               diff        lwr        upr     p adj
+VC:0.5-OJ:0.5 -5.25 -10.048124 -0.4518762 0.0242521
+OJ:1-OJ:0.5    9.47   4.671876 14.2681238 0.0000046
+VC:1-OJ:0.5    3.54  -1.258124  8.3381238 0.2640208
+OJ:2-OJ:0.5   12.83   8.031876 17.6281238 0.0000000
+VC:2-OJ:0.5   12.91   8.111876 17.7081238 0.0000000
+OJ:1-VC:0.5   14.72   9.921876 19.5181238 0.0000000
+VC:1-VC:0.5    8.79   3.991876 13.5881238 0.0000210
+OJ:2-VC:0.5   18.08  13.281876 22.8781238 0.0000000
+VC:2-VC:0.5   18.16  13.361876 22.9581238 0.0000000
+VC:1-OJ:1     -5.93 -10.728124 -1.1318762 0.0073930
+OJ:2-OJ:1      3.36  -1.438124  8.1581238 0.3187361
+VC:2-OJ:1      3.44  -1.358124  8.2381238 0.2936430
+OJ:2-VC:1      9.29   4.491876 14.0881238 0.0000069
+VC:2-VC:1      9.37   4.571876 14.1681238 0.0000058
+VC:2-OJ:2      0.08  -4.718124  4.8781238 1.0000000</code></pre>
+</div>
+</div>
+<p>いつも通り結果を細かくみていきましょう。</p>
+<pre><code>Tukey multiple comparisons of means
+95% family-wise confidence level</code></pre>
+<ul>
+<li>TukeyのHSD（Honestly Significant Difference）検定で、多群間のペアを比較を実施</li>
+<li>全体の誤差率（family-wise error rate）を5%以内にコントロールした多重比較を実施</li>
+</ul>
+<pre><code>Fit: aov(formula = len ~ supp * dose, data = ToothGrowth)</code></pre>
+<ul>
+<li>分析に使用したモデルを記載してくれています。</li>
+</ul>
+<pre><code>$supp
+      diff       lwr       upr     p adj
+VC-OJ -3.7 -5.579828 -1.820172 0.0002312</code></pre>
+<p>ここでは、supp(サプリ)での主効果を検定しています。 <code>$supp</code>がsuppの主効果を確認していることを示しています。</p>
+<p>そして、それ以下の項目は下記の通りです。</p>
+<ul>
+<li><code>diff</code> : <strong>「最初の群 − 次の群」</strong>の平均差。正なら最初が大きい、負なら小さい。</li>
+<li><code>lwr</code> : その差の推定値の信頼できる範囲(95%信頼区間)の下側</li>
+<li><code>upr</code> : その差の推定値の信頼できる範囲(95%信頼区間)の上側</li>
+<li><code>p adj</code> : 多重比較補正後のp値（通常のp値より厳しくなっている）</li>
+</ul>
+<p>このことから、今回の結果は「OJの方がVCより歯が伸びる効果が有意に高い」と言えます。</p>
+<pre><code>$dose
+        diff       lwr       upr   p adj
+1-0.5  9.130  6.362488 11.897512 0.0e+00
+2-0.5 15.495 12.727488 18.262512 0.0e+00
+2-1    6.365  3.597488  9.132512 2.7e-06</code></pre>
+<p>次は<code>dose</code>(摂取量)の主効果を調べています。 <code>dose</code>は３要因なので、１ついずつ比較して３パターンあり、それぞれを比較しています。 全ての比較で有意差があり、<code>0.5 &lt; 1.0 &lt; 2</code> という関係になっています。</p>
+<pre><code>$`supp:dose`
+               diff        lwr        upr     p adj
+VC:0.5-OJ:0.5 -5.25 -10.048124 -0.4518762 0.0242521
+OJ:1-OJ:0.5    9.47   4.671876 14.2681238 0.0000046
+VC:1-OJ:0.5    3.54  -1.258124  8.3381238 0.2640208
+OJ:2-OJ:0.5   12.83   8.031876 17.6281238 0.0000000
+VC:2-OJ:0.5   12.91   8.111876 17.7081238 0.0000000
+OJ:1-VC:0.5   14.72   9.921876 19.5181238 0.0000000
+VC:1-VC:0.5    8.79   3.991876 13.5881238 0.0000210
+OJ:2-VC:0.5   18.08  13.281876 22.8781238 0.0000000
+VC:2-VC:0.5   18.16  13.361876 22.9581238 0.0000000
+VC:1-OJ:1     -5.93 -10.728124 -1.1318762 0.0073930
+OJ:2-OJ:1      3.36  -1.438124  8.1581238 0.3187361
+VC:2-OJ:1      3.44  -1.358124  8.2381238 0.2936430
+OJ:2-VC:1      9.29   4.491876 14.0881238 0.0000069
+VC:2-VC:1      9.37   4.571876 14.1681238 0.0000058
+VC:2-OJ:2      0.08  -4.718124  4.8781238 1.0000000</code></pre>
+<p>最後に<code>supp:dose</code> の交互作用の検定結果です。<code>supp</code>が２要因で、<code>dose</code>が３要因なので2×3で6パターンの組み合わせがあります。その中から2つを選び比較していくので、<strong>「順番を考慮しない2つの選び方」</strong>の計算になります。 6C2=15通りになります。</p>
+<p>結果は下記の通りです。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">比較</th>
+<th style="text-align: right;">差 (diff)</th>
+<th style="text-align: right;">p値 (p adj)</th>
+<th style="text-align: left;">有意差の有無</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VC:0.5 - OJ:0.5</td>
+<td style="text-align: right;">-5.25</td>
+<td style="text-align: right;">0.0242521</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OJ:1 - OJ:0.5</td>
+<td style="text-align: right;">9.47</td>
+<td style="text-align: right;">0.0000046</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VC:1 - OJ:0.5</td>
+<td style="text-align: right;">3.54</td>
+<td style="text-align: right;">0.2640208</td>
+<td style="text-align: left;">有意差なし</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OJ:2 - OJ:0.5</td>
+<td style="text-align: right;">12.83</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VC:2 - OJ:0.5</td>
+<td style="text-align: right;">12.91</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OJ:1 - VC:0.5</td>
+<td style="text-align: right;">14.72</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VC:1 - VC:0.5</td>
+<td style="text-align: right;">8.79</td>
+<td style="text-align: right;">0.0000210</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OJ:2 - VC:0.5</td>
+<td style="text-align: right;">18.08</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VC:2 - VC:0.5</td>
+<td style="text-align: right;">18.16</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VC:1 - OJ:1</td>
+<td style="text-align: right;">-5.93</td>
+<td style="text-align: right;">0.0073930</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OJ:2 - OJ:1</td>
+<td style="text-align: right;">3.36</td>
+<td style="text-align: right;">0.3187361</td>
+<td style="text-align: left;">有意差なし</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VC:2 - OJ:1</td>
+<td style="text-align: right;">3.44</td>
+<td style="text-align: right;">0.2936430</td>
+<td style="text-align: left;">有意差なし</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OJ:2 - VC:1</td>
+<td style="text-align: right;">9.29</td>
+<td style="text-align: right;">0.0000069</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VC:2 - VC:1</td>
+<td style="text-align: right;">9.37</td>
+<td style="text-align: right;">0.0000058</td>
+<td style="text-align: left;">有意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VC:2 - OJ:2</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">1.0000000</td>
+<td style="text-align: left;">有意差なし</td>
+</tr>
+</tbody>
+</table>
+<p>結果が多くて大変ですが、頑張って細かくみるしかないですね。</p>
+<p>私なりに結果をまとめてみると下記の通りです。</p>
+<ul>
+<li><strong>サプリの種類（supp）</strong>だけでも有意差あり（OJ &gt; VC）</li>
+<li><strong>投与量（dose）</strong>は増えるほど効果あり（すべてのペアで有意）</li>
+<li><strong>交互作用（supp:dose）</strong>では、特定の組み合わせで効果が異なる</li>
+<li>特に低投与量（0.5）ではOJが優勢</li>
+<li>高投与量（2.0）ではVCとOJの差がほぼない</li>
+</ul>
+</section>
+<section id="図の作成" class="level2">
+<h2 class="anchored" data-anchor-id="図の作成">図の作成</h2>
+<section id="主効果" class="level3">
+<h3 class="anchored" data-anchor-id="主効果">主効果</h3>
+<p>まずは主効果を見るための図を作成してみましょう。 平均＋標準誤差バーの棒グラフを作成してみます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb31-2"><a href="#cb31-2"></a></span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="co"># supp（サプリ）の主効果</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a><span class="fu">ggplot</span>(ToothGrowth, <span class="fu">aes</span>(<span class="at">x =</span> supp, <span class="at">y =</span> len, <span class="at">fill =</span> supp)) <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"bar"</span>, <span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span>    <span class="co"># 平均値の棒グラフ</span></span>
+<span id="cb31-6"><a href="#cb31-6"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_se, <span class="at">geom =</span> <span class="st">"errorbar"</span>, <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span>  <span class="co"># 標準誤差バー</span></span>
+<span id="cb31-7"><a href="#cb31-7"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb31-8"><a href="#cb31-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"サプリの種類別：歯の伸びの平均"</span>,</span>
+<span id="cb31-9"><a href="#cb31-9"></a>       <span class="at">x =</span> <span class="st">"サプリの種類"</span>,</span>
+<span id="cb31-10"><a href="#cb31-10"></a>       <span class="at">y =</span> <span class="st">"歯の伸び (len)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-4-25-aov2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="co"># dose（投与量）の主効果</span></span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="fu">ggplot</span>(ToothGrowth, <span class="fu">aes</span>(<span class="at">x =</span> dose, <span class="at">y =</span> len, <span class="at">fill =</span> dose)) <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"bar"</span>, <span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb32-4"><a href="#cb32-4"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_se, <span class="at">geom =</span> <span class="st">"errorbar"</span>, <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"投与量別：歯の伸びの平均"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7"></a>       <span class="at">x =</span> <span class="st">"投与量"</span>,</span>
+<span id="cb32-8"><a href="#cb32-8"></a>       <span class="at">y =</span> <span class="st">"歯の伸び (len)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-4-25-aov2_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>今回は棒グラフ以外も作成してみます。 平均を点で示し、標準誤差をバーで表示します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="co"># dose別に点＋線で描く</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">ggplot</span>(ToothGrowth, <span class="fu">aes</span>(<span class="at">x =</span> dose, <span class="at">y =</span> len, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_se, <span class="at">geom =</span> <span class="st">"errorbar"</span>, <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb33-6"><a href="#cb33-6"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb33-7"><a href="#cb33-7"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"投与量ごとの歯の伸び平均（ポイント＋エラーバー）"</span>,</span>
+<span id="cb33-8"><a href="#cb33-8"></a>       <span class="at">x =</span> <span class="st">"投与量"</span>,</span>
+<span id="cb33-9"><a href="#cb33-9"></a>       <span class="at">y =</span> <span class="st">"歯の伸び (len)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-4-25-aov2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="交互作用" class="level3">
+<h3 class="anchored" data-anchor-id="交互作用">交互作用</h3>
+<p>交互作用を可視化する図としては、<strong>交互作用プロット</strong>を使用することが多いようです。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">ggplot</span>(ToothGrowth, <span class="fu">aes</span>(<span class="at">x =</span> dose, <span class="at">y =</span> len, <span class="at">color =</span> supp, <span class="at">group =</span> supp)) <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> mean_se, <span class="at">geom =</span> <span class="st">"errorbar"</span>, <span class="at">width =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"サプリと投与量の交互作用"</span>,</span>
+<span id="cb34-7"><a href="#cb34-7"></a>       <span class="at">x =</span> <span class="st">"投与量"</span>,</span>
+<span id="cb34-8"><a href="#cb34-8"></a>       <span class="at">y =</span> <span class="st">"歯の伸び"</span>,</span>
+<span id="cb34-9"><a href="#cb34-9"></a>       <span class="at">color =</span> <span class="st">"サプリ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-4-25-aov2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>見方としては、</p>
+<ul>
+<li><strong>2本の線（VCとOJ）</strong>が描かれます</li>
+<li>線が交差または離れているほど、交互作用がある</li>
+<li>線がほぼ平行なら、交互作用は弱い（またはなし）</li>
+</ul>
+<p>という感じです。</p>
+<hr>
+<p>本日は二元配置分散分析でした。</p>
+<p>次は繰り返しのあるものですね。ではまた次回。</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
