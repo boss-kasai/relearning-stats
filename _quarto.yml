@@ -21,6 +21,7 @@ metadata-files:
 
 format:
   html:
+    include-in-header: "meta.html"
     theme: litera
     highlight-style: a11y-dark
     code-block-border-left: "#3E8EDE"
