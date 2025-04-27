@@ -22,6 +22,7 @@ metadata-files:
 format:
   html:
     include-in-header: "meta.html"
+    include-after-body: "ga.html"
     theme: litera
     highlight-style: a11y-dark
     code-block-border-left: "#3E8EDE"
