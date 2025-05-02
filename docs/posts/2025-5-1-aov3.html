@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ThePastOfDice">
+<meta name="dcterms.date" content="2025-04-25">
+
+<title>分散分析 第3回：繰り返しのある分散分析(反復測定分散分析) – relearning-stats</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c44ea0d3856dd046b875089f7fe24e46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-20252fd49cbe0430650c563cf82ea673.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google Search Console Verification -->
+<meta name="google-site-verification" content="4Xe63scMS5QU4hF5gJItRfAqrQlsI23i3iy3thZYaWQ">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">relearning-stats</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../posts.html"> 
+<span class="menu-text">記事一覧</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../column.html"> 
+<span class="menu-text">コラム</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../R.html"> 
+<span class="menu-text">R</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">分散分析 第3回：繰り返しのある分散分析(反復測定分散分析)</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ThePastOfDice </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 25, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="繰り返しのある分散分析反復測定分散分析" class="level1">
+<h1>繰り返しのある分散分析(反復測定分散分析)</h1>
+<p>今回は繰り返しのある分散分析(反復測定分散分析)をやっていきます。 早速今回使用するデータを見ながら、 「そもそも”繰り返しのある”ってなによ」というところから、 確認してみましょう。</p>
+<section id="サンプルデータ" class="level2">
+<h2 class="anchored" data-anchor-id="サンプルデータ">サンプルデータ</h2>
+<p>今回使用するデータは<code>ChickWeight</code>です。 このブログで取り上げるのは初めてになると思います。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">data</span>(ChickWeight)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">summary</span>(ChickWeight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     weight           Time           Chick     Diet   
+ Min.   : 35.0   Min.   : 0.00   13     : 12   1:220  
+ 1st Qu.: 63.0   1st Qu.: 4.00   9      : 12   2:120  
+ Median :103.0   Median :10.00   20     : 12   3:120  
+ Mean   :121.8   Mean   :10.72   10     : 12   4:118  
+ 3rd Qu.:163.8   3rd Qu.:16.00   17     : 12          
+ Max.   :373.0   Max.   :21.00   19     : 12          
+                                 (Other):506          </code></pre>
+</div>
+</div>
+<ul>
+<li><code>weight</code> : 測定されたヒヨコの体重(数値)</li>
+<li><code>Time</code> : 体重が測定された日数(数値)</li>
+<li><code>Chick</code> : ヒヨコの個体番号(名義)</li>
+<li><code>Diet</code> : ヒヨコに与えられた餌の種類(因子)</li>
+</ul>
+<p>t検定での”繰り返しのある”という表現がありましたが、同一の調査対象に対する分析において使われることでした。 今回の例でも、ヒヨコの成長の記録のデータの分析に”繰り返しのある”分散分析を行うわけです。</p>
+<p>最もよく使う場面が、事前(pre)・事後(pos)の比較ではないでしょうか。</p>
+<p>体重が測定された日数がどうなっているかも見てみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">unique</span>(ChickWeight<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  0  2  4  6  8 10 12 14 16 18 20 21</code></pre>
+</div>
+</div>
+<p>1日おきに計測している感じですね。 最後だけは連続ですが。</p>
+</section>
+<section id="分析計画" class="level2">
+<h2 class="anchored" data-anchor-id="分析計画">分析計画</h2>
+<p><code>ChickWeight</code> のデータを分散分析をしていきます。</p>
+<p>独立変数は、<code>Time</code> と <code>Diet</code> で 従属変数が、<code>weight</code>です。</p>
+<p>つまり、繰り返しのある二元配置分散分析ということになります。 与える餌の種類によるヒヨコの体重増加の違いを仮定した分析になります。</p>
+<p>一気に分散分析をしても良いですが、データの可視化をして結果を想像しながら進められたら良いなと思います。</p>
+<ol type="1">
+<li>データの可視化</li>
+<li>前処理</li>
+<li>繰り返しのある分散分析</li>
+<li>結果の可視化</li>
+</ol>
+</section>
+<section id="分析" class="level2">
+<h2 class="anchored" data-anchor-id="分析">分析</h2>
+<p>実際に分析を進めていきましょう。</p>
+<section id="データの可視化" class="level3">
+<h3 class="anchored" data-anchor-id="データの可視化">データの可視化</h3>
+<p>まずは餌の種類ごとに色分けしたヒヨコの体重増加を線グラフに表してみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">ggplot</span>(ChickWeight, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> weight, <span class="at">group =</span> Chick, <span class="at">color =</span> Diet)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"各ヒヨコの体重変化（Diet別）"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7"></a>       <span class="at">x =</span> <span class="st">"日数（Time）"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>       <span class="at">y =</span> <span class="st">"体重（g）"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>       <span class="at">color =</span> <span class="st">"餌の種類（Diet）"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-5-1-aov3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>なんか見づらいですね。 1匹ずつのグラフなので見辛いのかもしれません。 餌毎の平均線を強調して入れてみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ggplot</span>(ChickWeight, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> weight, <span class="at">group =</span> Chick)) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">color =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> Diet, <span class="at">color =</span> Diet), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"各ヒヨコの体重とDietごとの平均曲線"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-5-1-aov3_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>これで大分見やすくなりましたね。 平均値では差がありそうですが、21日目での体重にはかなりの差がありそうです。 また、途中で何かしらの原因(死亡とか？)で21日前に切れているデータもありあそうです。</p>
+</section>
+<section id="前処理" class="level3">
+<h3 class="anchored" data-anchor-id="前処理">前処理</h3>
+<p>前処理として、データの加工を行なっていきます。 まず<code>Time</code>が現在数値になっており、このままでは使用できないのでfactor(要因)型に変換しましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ChickWeight<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>これで、<code>Time</code>がfactor(要因)型になりました。 しかし、このままでは12水準あり、多重比較やその後の解釈が大変になりそうです。 そこで今回は、開始ー中間ー最終の３地点のみでの比較にしましょう。</p>
+<p>factor(要因)型だと処理がうまくいかないようなので、一旦数値型に戻しておきましょう。 この話は後日記事にしようと思います。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># まずTimeを数値に戻しておく（もともとfactorにしていた場合）</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>ChickWeight<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(ChickWeight<span class="sc">$</span>Time))</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># 0, 10, 21日目のデータだけ抽出</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>chick_subset <span class="ot">&lt;-</span> <span class="fu">subset</span>(ChickWeight, Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">21</span>))</span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="co"># Timeをfactorに変換する</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>chick_subset<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(chick_subset<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>いろいろと処理をしたので、現在のデータが意図した形になっているかを確認してみましょう。</p>
+<p>サブセット後の基本構造を確認</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">str</span>(chick_subset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes 'nfnGroupedData', 'nfGroupedData', 'groupedData' and 'data.frame':  144 obs. of  4 variables:
+ $ weight: num  42 93 205 40 103 215 43 99 202 42 ...
+ $ Time  : Factor w/ 3 levels "0","10","21": 1 2 3 1 2 3 1 2 3 1 ...
+ $ Chick : Ord.factor w/ 50 levels "18"&lt;"16"&lt;"15"&lt;..: 15 15 15 17 17 17 14 14 14 11 ...
+ $ Diet  : Factor w/ 4 levels "1","2","3","4": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">summary</span>(chick_subset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     weight      Time        Chick     Diet  
+ Min.   : 39.0   0 :50   13     :  3   1:55  
+ 1st Qu.: 42.0   10:49   9      :  3   2:30  
+ Median :102.5   21:45   20     :  3   3:30  
+ Mean   :119.3           10     :  3   4:29  
+ 3rd Qu.:157.2           17     :  3         
+ Max.   :373.0           19     :  3         
+                         (Other):126         </code></pre>
+</div>
+</div>
+<p>Time列が factor になっているか</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">class</span>(chick_subset<span class="sc">$</span>Time)      <span class="co"># "factor" になっていればOK</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">is.factor</span>(chick_subset<span class="sc">$</span>Time)  <span class="co"># TRUE ならOK</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Time の水準を確認</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">levels</span>(chick_subset<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "0"  "10" "21"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">table</span>(chick_subset<span class="sc">$</span>Time)  <span class="co"># 各水準に何件あるかも同時に確認</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 0 10 21 
+50 49 45 </code></pre>
+</div>
+</div>
+<p>Chick が factor になっているか</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">is.factor</span>(chick_subset<span class="sc">$</span>Chick)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">levels</span>(chick_subset<span class="sc">$</span>Chick)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "18" "16" "15" "13" "9"  "20" "10" "8"  "17" "19" "4"  "6"  "11" "3"  "1" 
+[16] "12" "2"  "5"  "14" "7"  "24" "30" "22" "23" "27" "28" "26" "25" "29" "21"
+[31] "33" "37" "36" "31" "39" "38" "32" "40" "34" "35" "44" "45" "43" "41" "47"
+[46] "49" "46" "50" "42" "48"</code></pre>
+</div>
+</div>
+<p>さて、一気に確認しましたが、その中で気になることが1つあります。 それは、”Time の水準を確認”をした際に、欠損値が出ていることです。 繰り返しのある分散分析の場合は、データが完全であることが前提なので、欠損値があると分析時にエラーになってしまいます。 選択肢としては、下記があります - 欠損のあるデータを除外する - 欠損補填をする(推定値で補完) - 他の分析にする</p>
+<p>ということで、今回は最も一般的な方法である欠損値の除外をしてしまいましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="co"># 各 Chick が Time = 0, 10, 21 をすべて持っているかを確認</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: パッケージ 'dplyr' はバージョン 4.2.3 の R の下で造られました</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+ 次のパッケージを付け加えます: 'dplyr' </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code> 以下のオブジェクトは 'package:stats' からマスクされています:
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code> 以下のオブジェクトは 'package:base' からマスクされています:
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>complete_chicks <span class="ot">&lt;-</span> chick_subset <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>  <span class="fu">group_by</span>(Chick) <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a>  <span class="fu">filter</span>(n <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-5"><a href="#cb31-5"></a>  <span class="fu">pull</span>(Chick)</span>
+<span id="cb31-6"><a href="#cb31-6"></a></span>
+<span id="cb31-7"><a href="#cb31-7"></a><span class="co"># 完全なヒヨコだけを抽出</span></span>
+<span id="cb31-8"><a href="#cb31-8"></a>chick_complete <span class="ot">&lt;-</span> chick_subset <span class="sc">%&gt;%</span></span>
+<span id="cb31-9"><a href="#cb31-9"></a>  <span class="fu">filter</span>(Chick <span class="sc">%in%</span> complete_chicks) <span class="sc">%&gt;%</span></span>
+<span id="cb31-10"><a href="#cb31-10"></a>  <span class="fu">droplevels</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>さてデータを確認してみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">levels</span>(chick_complete<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "0"  "10" "21"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">table</span>(chick_complete<span class="sc">$</span>Time)  <span class="co"># 各水準に何件あるかも同時に確認</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 0 10 21 
+45 45 45 </code></pre>
+</div>
+</div>
+<p>これで良い感じになりましたね。 では、ここからは正規性と等分散性の確認に入りましょう。</p>
+</section>
+<section id="正規性と等分散性の確認" class="level3">
+<h3 class="anchored" data-anchor-id="正規性と等分散性の確認">正規性と等分散性の確認</h3>
+<p>今回も正規性と等分散性の検定はサクッとです。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb36-2"><a href="#cb36-2"></a></span>
+<span id="cb36-3"><a href="#cb36-3"></a>chick_complete <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4"></a>  <span class="fu">group_by</span>(Time) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5"></a>  <span class="fu">summarise</span>(<span class="at">p_value =</span> <span class="fu">shapiro.test</span>(weight)<span class="sc">$</span>p.value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  Time   p_value
+  &lt;fct&gt;    &lt;dbl&gt;
+1 0     0.000752
+2 10    0.465   
+3 21    0.869   </code></pre>
+</div>
+</div>
+<p><code>Time</code>が0の場合の正規性に問題がありそうです。 Q-Qプロットで見てみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb38-2"><a href="#cb38-2"></a></span>
+<span id="cb38-3"><a href="#cb38-3"></a><span class="fu">ggplot</span>(chick_complete <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Time <span class="sc">==</span> <span class="dv">0</span>), <span class="fu">aes</span>(<span class="at">sample =</span> weight)) <span class="sc">+</span></span>
+<span id="cb38-4"><a href="#cb38-4"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb38-5"><a href="#cb38-5"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Hiragino Sans"</span>) <span class="sc">+</span></span>
+<span id="cb38-7"><a href="#cb38-7"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Time = 0 の Q-Qプロット"</span>,</span>
+<span id="cb38-8"><a href="#cb38-8"></a>       <span class="at">x =</span> <span class="st">"理論分位点"</span>, <span class="at">y =</span> <span class="st">"観測分位点"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2025-5-1-aov3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>判断しづらいところですね。 一旦はこのまま進めましょう。</p>
+<p>次は等分散性の確認です。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="fu">bartlett.test</span>(weight <span class="sc">~</span> Time, <span class="at">data =</span> chick_complete)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Bartlett test of homogeneity of variances
+
+data:  weight by Time
+Bartlett's K-squared = 330.44, df = 2, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>等分散性に問題ありですね。 これが論文であれば、分散分析をやめて他の分析に変更しないといけなくなりそうです。 線形混合モデルとかになるみたいですが、それはまた次回にしましょう。</p>
+<p>今回は繰り返しのある分散分析のやり方を紹介したいので、この問題には目を瞑りましょう。 すみません。</p>
+</section>
+<section id="繰り返しのある分散分析" class="level3">
+<h3 class="anchored" data-anchor-id="繰り返しのある分散分析">繰り返しのある分散分析</h3>
+<p>問題を抱えつつ分析をしてみましょう。</p>
+<p>繰り返しがある場合は、指定が少し面倒なので一度時間のみの１要因で3水準での分析をしてみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="co"># Chick ごとに Time に沿って繰り返し測定されている構造を Error(Chick/Time) で指定しています。</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a>aov_result <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight <span class="sc">~</span> Time <span class="sc">+</span> <span class="fu">Error</span>(Chick<span class="sc">/</span>Time), <span class="at">data =</span> chick_complete)</span>
+<span id="cb41-3"><a href="#cb41-3"></a><span class="fu">summary</span>(aov_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: Chick
+          Df Sum Sq Mean Sq F value Pr(&gt;F)
+Residuals 44 114242    2596               
+
+Error: Chick:Time
+          Df Sum Sq Mean Sq F value Pr(&gt;F)    
+Time       2 721615  360808   238.6 &lt;2e-16 ***
+Residuals 88 133068    1512                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>時間による成長は当然のごとく出ますね。 繰り返し測定をしている要因を<code>Error</code>を指定しているのがポイントです。</p>
+<p>では、２要因の場合をやってみましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>aov2 <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet <span class="sc">+</span> <span class="fu">Error</span>(Chick<span class="sc">/</span>Time), <span class="at">data =</span> chick_complete)</span>
+<span id="cb43-2"><a href="#cb43-2"></a><span class="fu">summary</span>(aov2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: Chick
+          Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+Diet       3  30604   10201   5.001 0.00478 **
+Residuals 41  83637    2040                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Error: Chick:Time
+          Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Time       2 721615  360808 293.492  &lt; 2e-16 ***
+Time:Diet  6  32260    5377   4.374 0.000701 ***
+Residuals 82 100808    1229                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>結果の見方はこれまでの分散分析と変わらないので、詳細は省きます(以前の分散分析の記事を参照)。 結果を要約します。 - 餌の種類の主効果あり - 時間による主効果あり - 餌と時間による交互作用あり</p>
+<p>でした。 ここからは多重比較をしましょう。</p>
+</section>
+<section id="多重比較" class="level3">
+<h3 class="anchored" data-anchor-id="多重比較">多重比較</h3>
+<p>前回やった二要因分散分析では多重比較で<code>TukeyHSD()</code>を使用しましたが、繰り返しのある分散分析はこれが使えません。 繰り返しがあることをオプションで使えないようです。</p>
+<p>そのため、Time × Diet の組み合わせを新しい要因として作成して1要因12水準の多重比較の分析に変えます。</p>
+<p>組み合わせでの新しい要因の作成</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>chick_complete<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">interaction</span>(chick_complete<span class="sc">$</span>Time, chick_complete<span class="sc">$</span>Diet)</span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="fu">table</span>(chick_complete<span class="sc">$</span>group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 0.1 10.1 21.1  0.2 10.2 21.2  0.3 10.3 21.3  0.4 10.4 21.4 
+  16   16   16   10   10   10   10   10   10    9    9    9 </code></pre>
+</div>
+</div>
+<p>これで新しい要因は作れたので、多重比較を行いましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>oneway_model <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight <span class="sc">~</span> group, <span class="at">data =</span> chick_complete)</span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="fu">TukeyHSD</span>(oneway_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = weight ~ group, data = chick_complete)
+
+$group
+                   diff         lwr         upr     p adj
+10.1-0.1    55.68750000   10.069381  101.305619 0.0046278
+21.1-0.1   136.18750000   90.569381  181.805619 0.0000000
+0.2-0.1     -0.86250000  -52.875158   51.150158 1.0000000
+10.2-0.1    66.93750000   14.924842  118.950158 0.0020618
+21.2-0.1   173.13750000  121.124842  225.150158 0.0000000
+0.3-0.1     -0.76250000  -52.775158   51.250158 1.0000000
+10.3-0.1    75.53750000   23.524842  127.550158 0.0002339
+21.3-0.1   228.73750000  176.724842  280.750158 0.0000000
+0.4-0.1     -0.67361111  -54.435080   53.087858 1.0000000
+10.4-0.1    85.32638889   31.564920  139.087858 0.0000343
+21.4-0.1   196.99305556  143.231587  250.754525 0.0000000
+21.1-10.1   80.50000000   34.881881  126.118119 0.0000023
+0.2-10.1   -56.55000000 -108.562658   -4.537342 0.0207934
+10.2-10.1   11.25000000  -40.762658   63.262658 0.9998829
+21.2-10.1  117.45000000   65.437342  169.462658 0.0000000
+0.3-10.1   -56.45000000 -108.462658   -4.437342 0.0212194
+10.3-10.1   19.85000000  -32.162658   71.862658 0.9811669
+21.3-10.1  173.05000000  121.037342  225.062658 0.0000000
+0.4-10.1   -56.36111111 -110.122580   -2.599642 0.0310837
+10.4-10.1   29.63888889  -24.122580   83.400358 0.7943625
+21.4-10.1  141.30555556   87.544087  195.067025 0.0000000
+0.2-21.1  -137.05000000 -189.062658  -85.037342 0.0000000
+10.2-21.1  -69.25000000 -121.262658  -17.237342 0.0011729
+21.2-21.1   36.95000000  -15.062658   88.962658 0.4361857
+0.3-21.1  -136.95000000 -188.962658  -84.937342 0.0000000
+10.3-21.1  -60.65000000 -112.662658   -8.637342 0.0087505
+21.3-21.1   92.55000000   40.537342  144.562658 0.0000019
+0.4-21.1  -136.86111111 -190.622580  -83.099642 0.0000000
+10.4-21.1  -50.86111111 -104.622580    2.900358 0.0820969
+21.4-21.1   60.80555556    7.044087  114.567025 0.0129598
+10.2-0.2    67.80000000   10.097136  125.502864 0.0079020
+21.2-0.2   174.00000000  116.297136  231.702864 0.0000000
+0.3-0.2      0.10000000  -57.602864   57.802864 1.0000000
+10.3-0.2    76.40000000   18.697136  134.102864 0.0012895
+21.3-0.2   229.60000000  171.897136  287.302864 0.0000000
+0.4-0.2      0.18888889  -59.095168   59.472946 1.0000000
+10.4-0.2    86.18888889   26.904832  145.472946 0.0002290
+21.4-0.2   197.85555556  138.571499  257.139612 0.0000000
+21.2-10.2  106.20000000   48.497136  163.902864 0.0000007
+0.3-10.2   -67.70000000 -125.402864   -9.997136 0.0080606
+10.3-10.2    8.60000000  -49.102864   66.302864 0.9999974
+21.3-10.2  161.80000000  104.097136  219.502864 0.0000000
+0.4-10.2   -67.61111111 -126.895168   -8.327054 0.0116735
+10.4-10.2   18.38888889  -40.895168   77.672946 0.9965974
+21.4-10.2  130.05555556   70.771499  189.339612 0.0000000
+0.3-21.2  -173.90000000 -231.602864 -116.197136 0.0000000
+10.3-21.2  -97.60000000 -155.302864  -39.897136 0.0000072
+21.3-21.2   55.60000000   -2.102864  113.302864 0.0701848
+0.4-21.2  -173.81111111 -233.095168 -114.527054 0.0000000
+10.4-21.2  -87.81111111 -147.095168  -28.527054 0.0001566
+21.4-21.2   23.85555556  -35.428501   83.139612 0.9718800
+10.3-0.3    76.30000000   18.597136  134.002864 0.0013184
+21.3-0.3   229.50000000  171.797136  287.202864 0.0000000
+0.4-0.3      0.08888889  -59.195168   59.372946 1.0000000
+10.4-0.3    86.08888889   26.804832  145.372946 0.0002344
+21.4-0.3   197.75555556  138.471499  257.039612 0.0000000
+21.3-10.3  153.20000000   95.497136  210.902864 0.0000000
+0.4-10.3   -76.21111111 -135.495168  -16.927054 0.0020987
+10.4-10.3    9.78888889  -49.495168   69.072946 0.9999923
+21.4-10.3  121.45555556   62.171499  180.739612 0.0000000
+0.4-21.3  -229.41111111 -288.695168 -170.127054 0.0000000
+10.4-21.3 -143.41111111 -202.695168  -84.127054 0.0000000
+21.4-21.3  -31.74444444  -91.028501   27.539612 0.8233947
+10.4-0.4    86.00000000   25.175841  146.824159 0.0003949
+21.4-0.4   197.66666667  136.842508  258.490826 0.0000000
+21.4-10.4  111.66666667   50.842508  172.490826 0.0000008</code></pre>
+</div>
+</div>
+<p>組み合わせが多くて解釈するのが大変ですね。 こういう時に事前に作成したグラフなどで全体像を確認しておけば、どの値を特に見るべきかとかが分かります。 今回では、餌ごとの平均体重が時系列でクロスしている部分があれば、「最初はこの餌の方が成長が早いけど、途中からはこの餌の方がいいかも」みたいな考察に持っていける感じがします。</p>
+<p>というか、時間的な成長を比較してもあまり意味がない気がします。</p>
+<p>あまりデータの選択あが正しくなかったかもしれません。 申し訳ありません。</p>
+<p>一旦やり方自体は共有できたかなと思います。 もっとまともなデータを探してきます。 では、今日はこの辺で。</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KZTN76308C"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KZTN76308C');
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,296 @@
+---
+title: "分散分析 第3回：繰り返しのある分散分析(反復測定分散分析)"
+format: html
+author: "ThePastOfDice"
+date: '2025-04-25'
+last-modified: "2025-05-01"
+categories: ["R"]
+tags: ["R", "aov"]
+---
+
+# 繰り返しのある分散分析(反復測定分散分析)
+
+今回は繰り返しのある分散分析(反復測定分散分析)をやっていきます。
+早速今回使用するデータを見ながら、
+「そもそも”繰り返しのある”ってなによ」というところから、
+確認してみましょう。
+
+## サンプルデータ
+
+今回使用するデータは`ChickWeight`です。
+このブログで取り上げるのは初めてになると思います。
+
+```{r}
+data(ChickWeight)
+summary(ChickWeight)
+```
+
+- `weight` : 測定されたヒヨコの体重(数値)
+- `Time` : 体重が測定された日数(数値)
+- `Chick` : ヒヨコの個体番号(名義)
+- `Diet` : ヒヨコに与えられた餌の種類(因子)
+
+t検定での”繰り返しのある”という表現がありましたが、同一の調査対象に対する分析において使われることでした。
+今回の例でも、ヒヨコの成長の記録のデータの分析に”繰り返しのある”分散分析を行うわけです。
+
+最もよく使う場面が、事前(pre)・事後(pos)の比較ではないでしょうか。
+
+体重が測定された日数がどうなっているかも見てみましょう。
+
+```{r}
+unique(ChickWeight$Time)
+```
+
+1日おきに計測している感じですね。
+最後だけは連続ですが。
+
+## 分析計画
+
+`ChickWeight` のデータを分散分析をしていきます。
+
+独立変数は、`Time` と `Diet` で
+従属変数が、`weight`です。
+
+つまり、繰り返しのある二元配置分散分析ということになります。
+与える餌の種類によるヒヨコの体重増加の違いを仮定した分析になります。
+
+一気に分散分析をしても良いですが、データの可視化をして結果を想像しながら進められたら良いなと思います。
+
+1. データの可視化
+2. 前処理
+3. 繰り返しのある分散分析
+4. 結果の可視化
+
+## 分析
+
+実際に分析を進めていきましょう。
+
+### データの可視化
+
+まずは餌の種類ごとに色分けしたヒヨコの体重増加を線グラフに表してみましょう。
+
+```{r}
+library(ggplot2)
+
+ggplot(ChickWeight, aes(x = Time, y = weight, group = Chick, color = Diet)) +
+  geom_line(alpha = 0.5) +
+  theme_minimal(base_family = "Hiragino Sans") +
+  labs(title = "各ヒヨコの体重変化（Diet別）",
+       x = "日数（Time）",
+       y = "体重（g）",
+       color = "餌の種類（Diet）")
+```
+
+
+なんか見づらいですね。
+1匹ずつのグラフなので見辛いのかもしれません。
+餌毎の平均線を強調して入れてみましょう。
+
+```{r}
+ggplot(ChickWeight, aes(x = Time, y = weight, group = Chick)) +
+  geom_line(alpha = 0.4, color = "gray") +
+  stat_summary(aes(group = Diet, color = Diet), fun = mean, geom = "line", size = 1.2) +
+  theme_minimal(base_family = "Hiragino Sans") +
+  labs(title = "各ヒヨコの体重とDietごとの平均曲線")
+```
+
+これで大分見やすくなりましたね。
+平均値では差がありそうですが、21日目での体重にはかなりの差がありそうです。
+また、途中で何かしらの原因(死亡とか？)で21日前に切れているデータもありあそうです。
+
+### 前処理
+
+前処理として、データの加工を行なっていきます。
+まず`Time`が現在数値になっており、このままでは使用できないのでfactor(要因)型に変換しましょう。
+
+```{r}
+ChickWeight$Time <- as.factor(ChickWeight$Time)
+```
+
+これで、`Time`がfactor(要因)型になりました。
+しかし、このままでは12水準あり、多重比較やその後の解釈が大変になりそうです。
+そこで今回は、開始ー中間ー最終の３地点のみでの比較にしましょう。
+
+factor(要因)型だと処理がうまくいかないようなので、一旦数値型に戻しておきましょう。
+この話は後日記事にしようと思います。
+
+
+```{r}
+# まずTimeを数値に戻しておく（もともとfactorにしていた場合）
+ChickWeight$Time <- as.numeric(as.character(ChickWeight$Time))
+
+# 0, 10, 21日目のデータだけ抽出
+chick_subset <- subset(ChickWeight, Time %in% c(0, 10, 21))
+
+# Timeをfactorに変換する
+chick_subset$Time <- as.factor(chick_subset$Time)
+```
+
+いろいろと処理をしたので、現在のデータが意図した形になっているかを確認してみましょう。
+
+サブセット後の基本構造を確認
+```{r}
+str(chick_subset)
+summary(chick_subset)
+```
+
+Time列が factor になっているか
+```{r}
+class(chick_subset$Time)      # "factor" になっていればOK
+is.factor(chick_subset$Time)  # TRUE ならOK
+```
+
+Time の水準を確認
+```{r}
+levels(chick_subset$Time)
+table(chick_subset$Time)  # 各水準に何件あるかも同時に確認
+```
+
+Chick が factor になっているか
+```{r}
+is.factor(chick_subset$Chick)
+levels(chick_subset$Chick)
+```
+
+さて、一気に確認しましたが、その中で気になることが1つあります。
+それは、”Time の水準を確認”をした際に、欠損値が出ていることです。
+繰り返しのある分散分析の場合は、データが完全であることが前提なので、欠損値があると分析時にエラーになってしまいます。
+選択肢としては、下記があります
+- 欠損のあるデータを除外する
+- 欠損補填をする(推定値で補完)
+- 他の分析にする
+
+ということで、今回は最も一般的な方法である欠損値の除外をしてしまいましょう。
+
+```{r}
+# 各 Chick が Time = 0, 10, 21 をすべて持っているかを確認
+library(dplyr)
+
+complete_chicks <- chick_subset %>%
+  group_by(Chick) %>%
+  summarise(n = n()) %>%
+  filter(n == 3) %>%
+  pull(Chick)
+
+# 完全なヒヨコだけを抽出
+chick_complete <- chick_subset %>%
+  filter(Chick %in% complete_chicks) %>%
+  droplevels()
+```
+
+さてデータを確認してみましょう。
+```{r}
+levels(chick_complete$Time)
+table(chick_complete$Time)  # 各水準に何件あるかも同時に確認
+```
+
+これで良い感じになりましたね。
+では、ここからは正規性と等分散性の確認に入りましょう。
+
+### 正規性と等分散性の確認
+
+今回も正規性と等分散性の検定はサクッとです。
+
+```{r}
+library(dplyr)
+
+chick_complete %>%
+  group_by(Time) %>%
+  summarise(p_value = shapiro.test(weight)$p.value)
+```
+
+`Time`が0の場合の正規性に問題がありそうです。
+Q-Qプロットで見てみましょう。
+
+```{r}
+library(ggplot2)
+
+ggplot(chick_complete %>% filter(Time == 0), aes(sample = weight)) +
+  stat_qq() +
+  stat_qq_line() +
+  theme_minimal(base_family = "Hiragino Sans") +
+  labs(title = "Time = 0 の Q-Qプロット",
+       x = "理論分位点", y = "観測分位点")
+```
+
+判断しづらいところですね。
+一旦はこのまま進めましょう。
+
+次は等分散性の確認です。
+
+```{r}
+bartlett.test(weight ~ Time, data = chick_complete)
+```
+
+等分散性に問題ありですね。
+これが論文であれば、分散分析をやめて他の分析に変更しないといけなくなりそうです。
+線形混合モデルとかになるみたいですが、それはまた次回にしましょう。
+
+今回は繰り返しのある分散分析のやり方を紹介したいので、この問題には目を瞑りましょう。
+すみません。
+
+### 繰り返しのある分散分析
+
+問題を抱えつつ分析をしてみましょう。
+
+
+繰り返しがある場合は、指定が少し面倒なので一度時間のみの１要因で3水準での分析をしてみましょう。
+
+```{r}
+# Chick ごとに Time に沿って繰り返し測定されている構造を Error(Chick/Time) で指定しています。
+aov_result <- aov(weight ~ Time + Error(Chick/Time), data = chick_complete)
+summary(aov_result)
+```
+
+時間による成長は当然のごとく出ますね。
+繰り返し測定をしている要因を`Error`を指定しているのがポイントです。
+
+では、２要因の場合をやってみましょう。
+
+```{r}
+aov2 <- aov(weight ~ Time * Diet + Error(Chick/Time), data = chick_complete)
+summary(aov2)
+```
+
+結果の見方はこれまでの分散分析と変わらないので、詳細は省きます(以前の分散分析の記事を参照)。
+結果を要約します。
+- 餌の種類の主効果あり
+- 時間による主効果あり
+- 餌と時間による交互作用あり
+
+でした。
+ここからは多重比較をしましょう。
+
+### 多重比較
+
+前回やった二要因分散分析では多重比較で`TukeyHSD()`を使用しましたが、繰り返しのある分散分析はこれが使えません。
+繰り返しがあることをオプションで使えないようです。
+
+そのため、Time × Diet の組み合わせを新しい要因として作成して1要因12水準の多重比較の分析に変えます。
+
+組み合わせでの新しい要因の作成
+```{r}
+chick_complete$group <- interaction(chick_complete$Time, chick_complete$Diet)
+table(chick_complete$group)
+```
+
+これで新しい要因は作れたので、多重比較を行いましょう。
+```{r}
+oneway_model <- aov(weight ~ group, data = chick_complete)
+TukeyHSD(oneway_model)
+```
+
+
+組み合わせが多くて解釈するのが大変ですね。
+こういう時に事前に作成したグラフなどで全体像を確認しておけば、どの値を特に見るべきかとかが分かります。
+今回では、餌ごとの平均体重が時系列でクロスしている部分があれば、「最初はこの餌の方が成長が早いけど、途中からはこの餌の方がいいかも」みたいな考察に持っていける感じがします。
+
+というか、時間的な成長を比較してもあまり意味がない気がします。
+
+あまりデータの選択あが正しくなかったかもしれません。
+申し訳ありません。
+
+一旦やり方自体は共有できたかなと思います。
+もっとまともなデータを探してきます。
+では、今日はこの辺で。
+
