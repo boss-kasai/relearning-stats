@@ -297,7 +297,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ChickWeight<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>これで、<code>Time</code>がfactor(要因)型になりました。 しかし、このままでは12水準あり、多重比較やその後の解釈が大変になりそうです。 そこで今回は、開始ー中間ー最終の３地点のみでの比較にしましょう。</p>
-<p>factor(要因)型だと処理がうまくいかないようなので、一旦数値型に戻しておきましょう。 この話は後日記事にしようと思います。</p>
+<p>factor(要因)型だと処理がうまくいかないようなので、一旦数値型に戻しておきましょう。 factor型のままsubsetで特定の条件に一致するデータのみを取り出した場合に何が起きるのかは、別記事にしておきました。</p>
+<p><a href="2025-5-2-Notes-on-subset.html">factor型でのサブセットによる意図しない挙動と注意</a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># まずTimeを数値に戻しておく（もともとfactorにしていた場合）</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>ChickWeight<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(ChickWeight<span class="sc">$</span>Time))</span>

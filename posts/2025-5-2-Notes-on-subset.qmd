@@ -1,0 +1,112 @@
+---
+title: "factor型でのサブセットによる意図しない挙動と注意"
+format: html
+author: "ThePastOfDice"
+date: '2025-04-25'
+last-modified: "2025-05-01"
+categories: ["R"]
+tags: ["R", "aov"]
+---
+
+以前書いた[繰り返しのある二元配置](2025-5-1-aov3.html)の記事の中で、`Time`を一旦factor型に変換した後に、データを絞り込んで抽出するsubsetを使用する際に、一旦数値型に変換することがありました。
+
+なぜそんなことをしたのかという話と、subsetを使う時の注意点についてまとめました。
+
+## factor型でsubsetをすると何が起きるのか
+
+さて早速ですが、[繰り返しのある二元配置](2025-5-1-aov3.html)でも使用した`ChickWeight`のデータで実際に何が起こるのかを見てみましょう。
+
+まずは恒例のデータの確認から
+```{r}
+data(ChickWeight)
+summary(ChickWeight)
+```
+
+ここでデータの型に注目して、しっかりと見てみましょう。
+各列のデータの型は、下記コマンドで確認することができます。
+```{r}
+sapply(ChickWeight, class)
+```
+
+`numeric` は数値
+`ordered factor` は順序付き因子
+`factor` は因子
+です。
+
+ここで「データの型って何だよ」と思った方は今後そのことは記事で書こうと思います。
+型というのは、プログラミング全般でかなり重要な概念なので理解しておいて損はないと思います。
+
+ここでは次に進みます。
+`Time`は誕生から何日経過しているかのデータなので、数値になっています。
+ただし、これを分散分析などの、要因として使用したい場合は型をfactorに変更しておく必要があります。
+これはaov関数の要求事項です。
+
+なので一旦、`Time`をfactor型に変換してみます。
+```{r}
+ChickWeight$Time <- as.factor(ChickWeight$Time)
+sapply(ChickWeight, class)
+```
+
+これで、`ChickWeight`の`Time`列がfactor型になりました。
+
+ではこのまま特定の条件に一致するデータのみを取り出すsubsetを実行してみましょう。
+
+まず取り出す前の状況を確認します。
+```{r}
+summary(ChickWeight$Time)
+```
+
+データを取り出してみます。
+```{r}
+# 0, 10, 21日目のデータだけ抽出
+chick_subset <- subset(ChickWeight, Time %in% c(0, 10, 21))
+summary(chick_subset$Time)
+```
+
+データを取り出した結果を見て頂くと分かる通り、factorとして抜き出したもの以外も残り、その個数が０という状態になってしまいます。
+こうなるとaovはサンプルが0のものを分析しようとしてしまい、エラーになってしまうことがあります。
+
+実際に`Time`のみの一要因分散分析をして見ましょう。
+
+```{r}
+aov_result <- aov(weight ~ Time + Error(Chick/Time), data = chick_subset)
+summary(aov_result)
+```
+
+エラーにはなりませんでしたが、`Warning`(警告)が表示されました。
+ある群が0になってしまっているので、「モデルが特異になってしまっている」という警告です。
+一応、サンプルが0の群をないとして、自由度2で計算しているみたいです。
+結果は出ていますが、。あまりクールではないですよね。
+
+ちなみに、数値型でsubsetしてからの結果は下記のようになります。
+
+```{r}
+ChickWeight$Time <- as.numeric(as.character(ChickWeight$Time))
+sapply(ChickWeight, class)
+chick_subset_n <- subset(ChickWeight, Time %in% c(0, 10, 21))
+chick_subset_n$Time <- as.factor(chick_subset_n$Time)
+sapply(chick_subset_n, class)
+summary(chick_subset_n$Time)
+```
+
+ここでさらに面倒な話を説明します。
+
+```
+ChickWeight$Time <- as.numeric(as.character(ChickWeight$Time))
+```
+
+この部分ですが、これは`ChickWeight$Time`を一旦文字列にしてから、数値型に変換しています。
+前の処理で、`ChickWeight$Time`を一度factor型にしていました。
+`Time` が factor 型のまま `as.numeric()` を使うと、factor のレベル番号に変換されてしまいます。
+
+例えば、levels(ChickWeight$Time) が "0", "2", ..., "21" の順なら：
+- "0" → 1
+- "10" → 6
+- "21" → 12
+こんな感じで数字にされてしまいます。
+
+ユーザーが思っている値と違う結果になってしまうことがあります。
+この辺は十分注意しましょう。
+
+こんなことを書いていると、型とかについてどこかでまとめて方が良いのかなと思ったりします。
+今日はこの辺で。

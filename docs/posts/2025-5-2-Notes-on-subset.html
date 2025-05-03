@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ThePastOfDice">
+<meta name="dcterms.date" content="2025-04-25">
 
-<title>記事一覧 – relearning-stats</title>
+<title>factor型でのサブセットによる意図しない挙動と注意 – relearning-stats</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,25 +22,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c44ea0d3856dd046b875089f7fe24e46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-20252fd49cbe0430650c563cf82ea673.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c44ea0d3856dd046b875089f7fe24e46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-20252fd49cbe0430650c563cf82ea673.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,7 +106,7 @@ ul.task-list li input[type="checkbox"] {
 <meta name="google-site-verification" content="4Xe63scMS5QU4hF5gJItRfAqrQlsI23i3iy3thZYaWQ">
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed fullcontent">
@@ -81,7 +116,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">relearning-stats</span>
     </a>
   </div>
@@ -92,23 +127,23 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./posts.html" aria-current="page"> 
+    <a class="nav-link" href="../posts.html"> 
 <span class="menu-text">記事一覧</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./column.html"> 
+    <a class="nav-link" href="../column.html"> 
 <span class="menu-text">コラム</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./R.html"> 
+    <a class="nav-link" href="../R.html"> 
 <span class="menu-text">R</span></a>
   </li>  
 </ul>
@@ -128,8 +163,11 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">記事一覧</h1>
-</div>
+<h1 class="title">factor型でのサブセットによる意図しない挙動と注意</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+  </div>
+  </div>
 
 
 
@@ -142,6 +180,12 @@ ul.task-list li input[type="checkbox"] {
           </div>
   </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 25, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -151,22 +195,156 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="記事一覧" class="level1">
-<h1>記事一覧</h1>
-<ul>
-<li><p><a href="posts/2025-04-14-r-blog-start.html">Rブログはじめました</a></p></li>
-<li><p><a href="posts/2025-04-14-r-blog-with-r.html">RでRのブログを作る</a></p></li>
-<li><p><a href="posts/2025-04-15-r-iner-data.html">Rの組み込みデータ</a></p></li>
-<li><p><a href="posts/2025-04-16-basic-stats-na-check.html">基礎統計量と欠損値の確認</a></p></li>
-<li><p><a href="posts/2025-4-19-basic-bata-visualize.html">基本的なデータの可視化をしてみる</a></p></li>
-<li><p><a href="posts/2025-4-18-before-t-test.html">t検定をする前に</a></p></li>
-<li><p><a href="posts/2025-4-17-t-test.html">t検定</a></p></li>
-<li><p><a href="posts/2025-4-24-aov1.html">分散分析 - 導入と独立一元配置</a></p></li>
-<li><p><a href="posts/2025-4-25-aov2.html">分散分析 - 独立二元配置</a></p></li>
-<li><p><a href="posts/2025-5-1-aov3.html">分散分析 - 繰り返しのある二元配置</a></p></li>
-<li><p><a href="posts/2025-5-2-Notes-on-subset.html">factor型でのサブセットによる意図しない挙動と注意</a></p></li>
-<li><p><a href="posts/2025-4-23-can-the-laboratory-method-leave-the-lab.html">ラボラトリー方式はラボを出られるか</a></p></li>
-</ul>
+<p>以前書いた<a href="2025-5-1-aov3.html">繰り返しのある二元配置</a>の記事の中で、<code>Time</code>を一旦factor型に変換した後に、データを絞り込んで抽出するsubsetを使用する際に、一旦数値型に変換することがありました。</p>
+<p>なぜそんなことをしたのかという話と、subsetを使う時の注意点についてまとめました。</p>
+<section id="factor型でsubsetをすると何が起きるのか" class="level2">
+<h2 class="anchored" data-anchor-id="factor型でsubsetをすると何が起きるのか">factor型でsubsetをすると何が起きるのか</h2>
+<p>さて早速ですが、<a href="2025-5-1-aov3.html">繰り返しのある二元配置</a>でも使用した<code>ChickWeight</code>のデータで実際に何が起こるのかを見てみましょう。</p>
+<p>まずは恒例のデータの確認から</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">data</span>(ChickWeight)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">summary</span>(ChickWeight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     weight           Time           Chick     Diet   
+ Min.   : 35.0   Min.   : 0.00   13     : 12   1:220  
+ 1st Qu.: 63.0   1st Qu.: 4.00   9      : 12   2:120  
+ Median :103.0   Median :10.00   20     : 12   3:120  
+ Mean   :121.8   Mean   :10.72   10     : 12   4:118  
+ 3rd Qu.:163.8   3rd Qu.:16.00   17     : 12          
+ Max.   :373.0   Max.   :21.00   19     : 12          
+                                 (Other):506          </code></pre>
+</div>
+</div>
+<p>ここでデータの型に注目して、しっかりと見てみましょう。 各列のデータの型は、下記コマンドで確認することができます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">sapply</span>(ChickWeight, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$weight
+[1] "numeric"
+
+$Time
+[1] "numeric"
+
+$Chick
+[1] "ordered" "factor" 
+
+$Diet
+[1] "factor"</code></pre>
+</div>
+</div>
+<p><code>numeric</code> は数値 <code>ordered factor</code> は順序付き因子 <code>factor</code> は因子 です。</p>
+<p>ここで「データの型って何だよ」と思った方は今後そのことは記事で書こうと思います。 型というのは、プログラミング全般でかなり重要な概念なので理解しておいて損はないと思います。</p>
+<p>ここでは次に進みます。 <code>Time</code>は誕生から何日経過しているかのデータなので、数値になっています。 ただし、これを分散分析などの、要因として使用したい場合は型をfactorに変更しておく必要があります。 これはaov関数の要求事項です。</p>
+<p>なので一旦、<code>Time</code>をfactor型に変換してみます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>ChickWeight<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">sapply</span>(ChickWeight, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$weight
+[1] "numeric"
+
+$Time
+[1] "factor"
+
+$Chick
+[1] "ordered" "factor" 
+
+$Diet
+[1] "factor"</code></pre>
+</div>
+</div>
+<p>これで、<code>ChickWeight</code>の<code>Time</code>列がfactor型になりました。</p>
+<p>ではこのまま特定の条件に一致するデータのみを取り出すsubsetを実行してみましょう。</p>
+<p>まず取り出す前の状況を確認します。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">summary</span>(ChickWeight<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 0  2  4  6  8 10 12 14 16 18 20 21 
+50 50 49 49 49 49 49 48 47 47 46 45 </code></pre>
+</div>
+</div>
+<p>データを取り出してみます。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># 0, 10, 21日目のデータだけ抽出</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>chick_subset <span class="ot">&lt;-</span> <span class="fu">subset</span>(ChickWeight, Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">21</span>))</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">summary</span>(chick_subset<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 0  2  4  6  8 10 12 14 16 18 20 21 
+50  0  0  0  0 49  0  0  0  0  0 45 </code></pre>
+</div>
+</div>
+<p>データを取り出した結果を見て頂くと分かる通り、factorとして抜き出したもの以外も残り、その個数が０という状態になってしまいます。 こうなるとaovはサンプルが0のものを分析しようとしてしまい、エラーになってしまうことがあります。</p>
+<p>実際に<code>Time</code>のみの一要因分散分析をして見ましょう。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>aov_result <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight <span class="sc">~</span> Time <span class="sc">+</span> <span class="fu">Error</span>(Chick<span class="sc">/</span>Time), <span class="at">data =</span> chick_subset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in aov(weight ~ Time + Error(Chick/Time), data = chick_subset): Error()
+モデルは特異です</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">summary</span>(aov_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: Chick
+          Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+Time       2  34854   17427   7.087 0.00204 **
+Residuals 47 115575    2459                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Error: Chick:Time
+          Df Sum Sq Mean Sq F value Pr(&gt;F)    
+Time       2 723535  361767   245.2 &lt;2e-16 ***
+Residuals 92 135751    1476                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>エラーにはなりませんでしたが、<code>Warning</code>(警告)が表示されました。 ある群が0になってしまっているので、「モデルが特異になってしまっている」という警告です。 一応、サンプルが0の群をないとして、自由度2で計算しているみたいです。 結果は出ていますが、。あまりクールではないですよね。</p>
+<p>ちなみに、数値型でsubsetしてからの結果は下記のようになります。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>ChickWeight<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(ChickWeight<span class="sc">$</span>Time))</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">sapply</span>(ChickWeight, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$weight
+[1] "numeric"
+
+$Time
+[1] "numeric"
+
+$Chick
+[1] "ordered" "factor" 
+
+$Diet
+[1] "factor"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>chick_subset_n <span class="ot">&lt;-</span> <span class="fu">subset</span>(ChickWeight, Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">21</span>))</span>
+<span id="cb17-2"><a href="#cb17-2"></a>chick_subset_n<span class="sc">$</span>Time <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(chick_subset_n<span class="sc">$</span>Time)</span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">sapply</span>(chick_subset_n, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$weight
+[1] "numeric"
+
+$Time
+[1] "factor"
+
+$Chick
+[1] "ordered" "factor" 
+
+$Diet
+[1] "factor"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">summary</span>(chick_subset_n<span class="sc">$</span>Time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 0 10 21 
+50 49 45 </code></pre>
+</div>
+</div>
+<p>ここでさらに面倒な話を説明します。</p>
+<pre><code>ChickWeight$Time &lt;- as.numeric(as.character(ChickWeight$Time))</code></pre>
+<p>この部分ですが、これは<code>ChickWeight$Time</code>を一旦文字列にしてから、数値型に変換しています。 前の処理で、<code>ChickWeight$Time</code>を一度factor型にしていました。 <code>Time</code> が factor 型のまま <code>as.numeric()</code> を使うと、factor のレベル番号に変換されてしまいます。</p>
+<p>例えば、levels(ChickWeight$Time) が “0”, “2”, …, “21” の順なら： - “0” → 1 - “10” → 6 - “21” → 12 こんな感じで数字にされてしまいます。</p>
+<p>ユーザーが思っている値と違う結果になってしまうことがあります。 この辺は十分注意しましょう。</p>
+<p>こんなことを書いていると、型とかについてどこかでまとめて方が良いのかなと思ったりします。 今日はこの辺で。</p>
 
 
 </section>
